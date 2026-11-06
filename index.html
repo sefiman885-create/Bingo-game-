@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Afro Bingo</title>
+  <title>Sefi Bingo</title>
   <style>
     :root {
       --bg-purple: #c5b4e3;
@@ -63,7 +63,7 @@
       cursor: pointer;
     }
 
-    /* Stats Ribbon (Image 1 & 2) */
+    /* Stats Ribbon */
     .stats-ribbon {
       background: var(--card-purple);
       padding: 6px;
@@ -144,7 +144,7 @@
       font-size: 0.95rem;
     }
 
-    /* 600 Cards Grid (Image 2) */
+    /* 600 Cards Grid */
     .cartela-scroll-box {
       background: rgba(255, 255, 255, 0.4);
       border: 2px solid rgba(255,255,255,0.7);
@@ -219,7 +219,7 @@
       font-size: 1.2rem;
     }
 
-    /* GAME VIEW (Image 1) */
+    /* GAME VIEW */
     .game-arena {
       display: flex;
       gap: 8px;
@@ -425,7 +425,7 @@
       font-size: 0.6rem;
     }
 
-    /* Bottom Action Controls (Image 1) */
+    /* Bottom Action Controls */
     .game-bottom-actions {
       display: flex;
       gap: 8px;
@@ -507,18 +507,17 @@
       cursor: pointer;
     }
   </style>
-</head>
-<body>
+</head><body>
 
 <div id="app-container">
-  <!-- Top Title Bar -->
+  <!-- Top Bar -->
   <div class="top-header">
     <span class="close-btn" onclick="switchView('gameSelectionView')">&times;</span>
-    <span>Afro Bingo</span>
+    <span>Sefi Bingo</span>
     <span>&#8942;</span>
   </div>
 
-  <!-- Stats Header (Shared) -->
+  <!-- Stats Header -->
   <div class="stats-ribbon">
     <div class="stat-pill btn-pill" onclick="leaveGame()">
       <span class="lbl">Leave</span>
@@ -550,14 +549,14 @@
     </div>
 
     <div class="cartela-scroll-box" id="cartelaGrid">
-      <!-- 1-600 Cards will load here -->
+      <!-- 1-600 Cards dynamically loaded -->
     </div>
   </div>
 
-  <!-- VIEW 2: Active Bingo Game Arena -->
+  <!-- VIEW 2: Active Bingo Arena -->
   <div id="activeGameView" class="view-section">
     <div class="game-arena">
-      <!-- Left side: 1-75 full board -->
+      <!-- Left side: 1-75 master board -->
       <div class="left-board-col">
         <div class="bingo-header-row">
           <div class="b-let">B</div>
@@ -590,7 +589,7 @@
 
         <!-- Selected Player Cartelas -->
         <div class="user-cartelas-area" id="userCartelasContainer">
-          <!-- User 5x5 matrices will render here -->
+          <!-- User 5x5 matrices render here -->
         </div>
       </div>
     </div>
@@ -653,9 +652,7 @@
     <p id="modalBodyText" style="font-size: 0.9rem; line-height: 1.4;"></p>
     <button onclick="closeModal()">እሺ</button>
   </div>
-</div>
-
-<script>
+</div><script>
   // Game Configuration & State
   const STAKE = 10;
   let wallet = 10; // Welcome Bonus 10 ETB
@@ -674,10 +671,10 @@
   let currentBall = null;
 
   // Bot & Player Calculations
-  let currentPlayersCount = Math.floor(Math.random() * (120 - 40 + 1)) + 40; // Random 40-120 players
-  let derashAmount = 0; // 80% to players, 20% to bot
+  let currentPlayersCount = Math.floor(Math.random() * (120 - 40 + 1)) + 40;
+  let derashAmount = 0; // 80% to winners, 20% to bot revenue
 
-  // Audio effect
+  // Audio tone generator
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   function beep(freq = 600, duration = 120) {
     try {
@@ -691,7 +688,7 @@
     } catch(e) {}
   }
 
-  // Init App
+  // App Initialization
   window.addEventListener('DOMContentLoaded', () => {
     updateWalletUI();
     render600CartelaGrid();
@@ -700,11 +697,11 @@
     renderHistory();
   });
 
-  // Calculate Stake & Derash
+  // Calculate Stake & Derash (80/20 split)
   function calculateEconomy() {
     const totalPool = (currentPlayersCount + selectedCartelas.length) * STAKE;
     derashAmount = Math.floor(totalPool * 0.80); // 80% to winners
-    const botRevenue = totalPool - derashAmount;   // 20% to bot revenue
+    const botRevenue = totalPool - derashAmount;   // 20% to bot
 
     document.getElementById('playersVal').innerText = currentPlayersCount + selectedCartelas.length;
     document.getElementById('derashVal').innerText = derashAmount + ' ETB';
@@ -716,7 +713,7 @@
     document.getElementById('walletPageBal').innerText = wallet;
   }
 
-  // Render 1 - 600 Cartelas
+  // Render 1 - 600 Cartelas Grid
   function render600CartelaGrid() {
     const container = document.getElementById('cartelaGrid');
     container.innerHTML = '';
@@ -742,7 +739,6 @@
         showModal("ማስጠንቀቂያ", "በአንድ ዙር መምረጥ የሚችሉት ከፍተኛው 3 ካርቴላ ብቻ ነው!");
         return;
       }
-      // Check wallet balance
       const required = (selectedCartelas.length + 1) * STAKE;
       if (wallet < required) {
         showModal("ቀሪ ሂሳብ የለም", "እባክዎ ዲፖዚት አድርገው እንደገና ይሞክሩ!");
@@ -760,7 +756,6 @@
   function render75MasterBoard() {
     const container = document.getElementById('board75Cells');
     container.innerHTML = '';
-    // Standard rows: 15 rows, 5 columns (B:1-15, I:16-30, N:31-45, G:46-60, O:61-75)
     for (let r = 0; r < 15; r++) {
       for (let c = 0; c < 5; c++) {
         const num = (c * 15) + (r + 1);
@@ -773,7 +768,7 @@
     }
   }
 
-  // Lobby Timer (30s)
+  // Lobby Timer (30s Countdown)
   function startLobbyCountdown() {
     lobbyTimer = 30;
     document.getElementById('statusHeaderLbl').innerText = 'Preparing...';
@@ -784,4 +779,347 @@
       lobbyTimer--;
       document.getElementById('countdownVal').innerText = `00:${lobbyTimer < 10 ? '0' : ''}${lobbyTimer}`;
 
-      if (lobbyTimer 
+      if (lobbyTimer <= 0) {
+        clearInterval(lobbyInterval);
+        handleLobbyEnd();
+      }
+    }, 1000);
+  }
+
+  // Handle End of Lobby
+  function handleLobbyEnd() {
+    if (selectedCartelas.length === 0) {
+      if (wallet >= STAKE) {
+        const randomCard = Math.floor(Math.random() * 600) + 1;
+        selectedCartelas.push(randomCard);
+      } else {
+        showModal("ቀሪ ሂሳብ የለም", "እባክዎ ዲፖዚት አድርገው እንደገና ይሞክሩ!");
+        startLobbyCountdown();
+        return;
+      }
+    }
+
+    const totalDeduct = selectedCartelas.length * STAKE;
+    wallet -= totalDeduct;
+    historyLogs.unshift({
+      type: 'out',
+      desc: `Stake for ${selectedCartelas.length} Cards`,
+      amount: totalDeduct,
+      date: new Date().toLocaleTimeString()
+    });
+    updateWalletUI();
+    renderHistory();
+
+    startBingoDraw();
+  }
+
+  // Game Engine: 1-75 Ball Drawer
+  function startBingoDraw() {
+    isGameActive = true;
+    drawnBalls = [];
+    document.getElementById('statusHeaderLbl').innerText = 'Playing';
+    switchView('activeGameView');
+    renderUserCards();
+
+    let pool = Array.from({ length: 75 }, (_, i) => i + 1);
+
+    gameInterval = setInterval(() => {
+      if (pool.length === 0) {
+        clearInterval(gameInterval);
+        endGame("ጨዋታው ተጠናቋል!");
+        return;
+      }
+
+      const rIdx = Math.floor(Math.random() * pool.length);
+      const ball = pool.splice(rIdx, 1)[0];
+      drawnBalls.push(ball);
+      currentBall = ball;
+
+      beep(850, 150);
+
+      let letter = 'B';
+      if (ball >= 16 && ball <= 30) letter = 'I';
+      else if (ball >= 31 && ball <= 45) letter = 'N';
+      else if (ball >= 46 && ball <= 60) letter = 'G';
+      else if (ball >= 61 && ball <= 75) letter = 'O';
+
+      document.getElementById('currentCallBadge').innerText = `${letter}-${ball}`;
+
+      const mCell = document.getElementById(`master-cell-${ball}`);
+      if (mCell) {
+        mCell.classList.add(letter === 'I' || letter === 'B' ? 'hit-green' : 'hit-orange');
+      }
+
+      updateRecentBallsUI(letter, ball);
+
+      if (autoMark) {
+        autoMarkCells(ball);
+      }
+
+      if (drawnBalls.length > 38 && Math.random() < 0.08) {
+        clearInterval(gameInterval);
+        endGame(`ተጫዋች #${Math.floor(Math.random()*500 + 1)} ቢንጎ አሸንፏል! ደራሽ: ${derashAmount} ETB`);
+      }
+    }, 2800);
+  }
+
+  // Recent Balls UI
+  function updateRecentBallsUI(letter, num) {
+    const box = document.getElementById('recentCallsBox');
+    if (drawnBalls.length === 1) box.innerHTML = '';
+
+    const ballEl = document.createElement('div');
+    ballEl.className = 'ball-sm';
+    ballEl.style.background = letter === 'I' ? '#2e7d32' : letter === 'N' ? '#1565c0' : '#f57c00';
+    ballEl.innerText = `${letter}${num}`;
+
+    box.prepend(ballEl);
+    if (box.children.length > 4) {
+      box.removeChild(box.lastChild);
+    }
+  }
+
+  // User Cartelas Matrix (5x5)
+  let userCardData = {};
+  function renderUserCards() {
+    const container = document.getElementById('userCartelasContainer');
+    container.innerHTML = '';
+    userCardData = {};
+
+    selectedCartelas.forEach(cNum => {
+      userCardData[cNum] = generate5x5(cNum);
+
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'active-card';
+      cardWrapper.innerHTML = `
+        <div class="card-top-lbl">
+          <span>ካርቴላ #${cNum}</span>
+          <span>5x5 Grid</span>
+        </div>
+        <div class="player-card-grid" id="grid-${cNum}"></div>
+      `;
+      container.appendChild(cardWrapper);
+
+      const gridEl = cardWrapper.querySelector(`#grid-${cNum}`);
+      userCardData[cNum].forEach((val, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'p-cell' + (val === 'FREE' ? ' free marked' : '');
+        cell.id = `cell-${cNum}-${idx}`;
+        cell.innerText = val;
+        cell.onclick = () => {
+          if (drawnBalls.includes(val) || val === 'FREE') {
+            cell.classList.toggle('marked');
+          }
+        };
+        gridEl.appendChild(cell);
+      });
+    });
+  }
+
+  // 5x5 Matrix Logic
+  function generate5x5(seed) {
+    const matrix = [];
+    const ranges = [
+      [1, 15],   // B
+      [16, 30],  // I
+      [31, 45],  // N
+      [46, 60],  // G
+      [61, 75]   // O
+    ];
+
+    const cols = [];
+    for (let c = 0; c < 5; c++) {
+      let [min, max] = ranges[c];
+      let pool = [];
+      for (let n = min; n <= max; n++) pool.push(n);
+
+      let s = seed + c * 17;
+      let colNums = [];
+      for (let i = 0; i < 5; i++) {
+        let r = (s * (i + 1) * 9301 + 49297) % 233280;
+        let pickIdx = Math.floor((r / 233280) * pool.length);
+        colNums.push(pool.splice(pickIdx, 1)[0]);
+      }
+      cols.push(colNums);
+    }
+
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 5; c++) {
+        if (r === 2 && c === 2) {
+          matrix.push('FREE');
+        } else {
+          matrix.push(cols[c][r]);
+        }
+      }
+    }
+    return matrix;
+  }
+
+  // Auto-Marking
+  function autoMarkCells(ball) {
+    selectedCartelas.forEach(cNum => {
+      userCardData[cNum].forEach((val, idx) => {
+        if (val === ball) {
+          const el = document.getElementById(`cell-${cNum}-${idx}`);
+          if (el) el.classList.add('marked');
+        }
+      });
+    });
+  }
+
+  function toggleAutoMark() {
+    autoMark = !autoMark;
+    const btn = document.getElementById('autoMarkBtn');
+    btn.innerText = autoMark ? 'Auto ON' : 'Auto OFF';
+    btn.style.background = autoMark ? '#2e7d32' : '#777';
+  }
+
+  // Win Claim Logic
+  function checkBingoClaim() {
+    let won = false;
+    selectedCartelas.forEach(cNum => {
+      const grid = userCardData[cNum];
+      const isMarked = (idx) => {
+        const el = document.getElementById(`cell-${cNum}-${idx}`);
+        return el && el.classList.contains('marked');
+      };
+
+      for (let r = 0; r < 5; r++) {
+        if ([0,1,2,3,4].every(c => isMarked(r * 5 + c))) won = true;
+      }
+      for (let c = 0; c < 5; c++) {
+        if ([0,1,2,3,4].every(r => isMarked(r * 5 + c))) won = true;
+      }
+    });
+
+    if (won) {
+      clearInterval(gameInterval);
+      wallet += derashAmount;
+      historyLogs.unshift({
+        type: 'in',
+        desc: 'Bingo Won (80% Derash)',
+        amount: derashAmount,
+        date: new Date().toLocaleTimeString()
+      });
+      updateWalletUI();
+      renderHistory();
+      showModal("እንኳን ደስ አሎት! BINGO!", `ጨዋታውን አሸንፈዋል! ${derashAmount} ETB ወዲያውኑ ወደ ዋሌትዎ ገቢ ተደርጓል።`);
+      resetToLobby();
+    } else {
+      showModal("ልክ አይደለም", "ገና ቢንጎ አልሰሩም! እባክዎ ቁጥሮችዎን በደንብ ይፈትሹ።");
+    }
+  }
+
+  function endGame(msg) {
+    showModal("የጨዋታ ማብቂያ", msg);
+    resetToLobby();
+  }
+
+  function resetToLobby() {
+    isGameActive = false;
+    selectedCartelas = [];
+    document.querySelectorAll('.cartela-node').forEach(n => n.classList.remove('selected'));
+    document.getElementById('boardsCountLbl').innerText = 'Boards: 0/3';
+    switchView('gameSelectionView');
+    startLobbyCountdown();
+  }
+
+  function leaveGame() {
+    if (confirm("ከጨዋታው መውጣት ይፈልጋሉ?")) {
+      clearInterval(gameInterval);
+      clearInterval(lobbyInterval);
+      location.reload();
+    }
+  }
+
+  // Navigation Controller
+  function switchNav(page) {
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    if (page === 'game') {
+      switchView(isGameActive ? 'activeGameView' : 'gameSelectionView');
+    } else if (page === 'wallet') {
+      switchView('walletView');
+    } else if (page === 'history') {
+      switchView('historyView');
+    } else if (page === 'profile') {
+      showModal("የተጠቃሚ መረጃ", `ስም: Sefi Player\nቀሪ ሂሳብ: ${wallet} ETB\nየተጫወቱት ጨዋታ: ${historyLogs.length}`);
+    }
+  }
+
+  function switchView(viewId) {
+    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+  }
+
+  // History Render
+  function renderHistory() {
+    const list = document.getElementById('txList');
+    list.innerHTML = '';
+    historyLogs.forEach(tx => {
+      const row = document.createElement('div');
+      row.className = 'tx-item';
+      row.innerHTML = `
+        <div>
+          <strong>${tx.desc}</strong><br>
+          <small style="color: #888;">${tx.date}</small>
+        </div>
+        <div class="${tx.type === 'in' ? 'tx-in' : 'tx-out'}">
+          ${tx.type === 'in' ? '+' : '-'}${tx.amount} ETB
+        </div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // Deposit / Withdraw Simulators
+  function openDepositModal() {
+    const amt = prompt("የሚያስገቡትን የገንዘብ መጠን ያስገቡ (ETB):", "50");
+    if (amt && !isNaN(amt) && Number(amt) > 0) {
+      wallet += Number(amt);
+      historyLogs.unshift({
+        type: 'in',
+        desc: 'Deposit',
+        amount: Number(amt),
+        date: new Date().toLocaleTimeString()
+      });
+      updateWalletUI();
+      renderHistory();
+      showModal("ተሳክቷል", `${amt} ETB በተሳካ ሁኔታ ገቢ ተደርጓል!`);
+    }
+  }
+
+  function openWithdrawModal() {
+    const amt = prompt("የሚያወጡትን የገንዘብ መጠን ያስገቡ (ETB):", "20");
+    if (amt && !isNaN(amt) && Number(amt) > 0) {
+      if (Number(amt) > wallet) {
+        showModal("ስህተት", "በቂ ሂሳብ የለዎትም!");
+        return;
+      }
+      wallet -= Number(amt);
+      historyLogs.unshift({
+        type: 'out',
+        desc: 'Withdrawal',
+        amount: Number(amt),
+        date: new Date().toLocaleTimeString()
+      });
+      updateWalletUI();
+      renderHistory();
+      showModal("ተሳክቷል", `${amt} ETB ወጪ ተደርጓል!`);
+    }
+  }
+
+  // Modal Control
+  function showModal(title, text) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalBodyText').innerText = text;
+    document.getElementById('msgModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('msgModal').style.display = 'none';
+  }
+</script>
+</body>
+</html>
