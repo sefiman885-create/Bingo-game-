@@ -2,369 +2,786 @@
 <html lang="am">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sefi Bingo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Afro Bingo</title>
   <style>
     :root {
-      --primary: #4a154b;
-      --bg: #2c0d2d;
-      --card-bg: #3d143e;
-      --accent: #2ecc71;
-      --accent-hover: #27ae60;
-      --text: #ffffff;
-      --cell-selected: #e74c3c;
+      --bg-purple: #c5b4e3;
+      --card-purple: #5c1381;
+      --deep-purple: #420b5f;
+      --orange-btn: #f57c00;
+      --orange-bright: #ff9800;
+      --green-btn: #388e3c;
+      --red-btn: #d32f2f;
+      --blue-btn: #1976d2;
+      --text-white: #ffffff;
+      --border-light: rgba(255, 255, 255, 0.4);
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       user-select: none;
     }
+
     body {
-      background: radial-gradient(circle at top, var(--primary), var(--bg));
-      color: var(--text);
+      background-color: var(--bg-purple);
+      color: #333;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 16px;
+      align-items: flex-start;
     }
-    .container {
+
+    #app-container {
       width: 100%;
       max-width: 480px;
+      min-height: 100vh;
+      background: var(--bg-purple);
       display: flex;
       flex-direction: column;
-      align-items: center;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
-    .view {
-      width: 100%;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-    }
-    .view.active {
-      display: flex;
-    }
-    .title {
-      font-size: 2rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .card-panel {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 24px;
-      width: 100%;
-      text-align: center;
-    }
-    .subtitle {
-      font-size: 0.95rem;
-      opacity: 0.8;
-      margin-bottom: 16px;
-    }
-    .btn-primary {
-      width: 100%;
-      background: var(--accent);
-      color: #ffffff;
-      border: none;
-      border-radius: 12px;
-      padding: 14px 20px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
+
+    /* Top Bar */
+    .top-header {
+      background: #181818;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    .timer-banner {
+      padding: 10px 16px;
       font-size: 1.1rem;
       font-weight: 700;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 8px 16px;
-      border-radius: 20px;
-      margin-bottom: 16px;
-      color: #f1c40f;
     }
-    .cartela-input-group {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      margin-bottom: 16px;
-    }
-    .cartela-input-group input {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(0, 0, 0, 0.4);
-      color: #fff;
-      font-size: 1rem;
-      text-align: center;
-    }
-    .btn-secondary {
-      background: #3498db;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 18px;
-      font-weight: 600;
+
+    .top-header .close-btn {
+      font-size: 1.4rem;
       cursor: pointer;
     }
-    .selected-cartelas {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-      min-height: 38px;
-    }
-    .badge {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 6px 12px;
-      border-radius: 14px;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .called-ball {
-      font-size: 2.2rem;
-      font-weight: 800;
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: #e67e22;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-    .bingo-grid {
+
+    /* Stats Ribbon (Image 1 & 2) */
+    .stats-ribbon {
+      background: var(--card-purple);
+      padding: 6px;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 4px;
-      width: 100%;
-      max-width: 320px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 8px;
+      margin: 6px;
       border-radius: 12px;
-      margin-bottom: 16px;
     }
-    .grid-cell {
-      aspect-ratio: 1;
-      background: rgba(255, 255, 255, 0.1);
+
+    .stat-pill {
+      background: #fff;
+      border-radius: 8px;
+      padding: 4px 2px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .stat-pill.btn-pill {
+      background: var(--card-purple);
+      color: #fff;
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+    }
+
+    .stat-pill .lbl {
+      font-size: 0.62rem;
+      color: var(--deep-purple);
+      font-weight: 600;
+    }
+
+    .stat-pill.btn-pill .lbl {
+      color: #fff;
+    }
+
+    .stat-pill .val {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--card-purple);
+      word-break: break-all;
+    }
+
+    .stat-pill.btn-pill .val {
+      color: #fff;
+    }
+
+    /* Screen Views */
+    .view-section {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      padding: 8px 10px 70px 10px;
+    }
+
+    .view-section.active {
+      display: flex;
+    }
+
+    /* Sub-header in Selection */
+    .selection-subbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 12px;
+      font-weight: bold;
+    }
+
+    .boards-badge {
+      color: #1b5e20;
+      font-size: 0.95rem;
+    }
+
+    .stake-title {
+      color: #2e7d32;
+      font-size: 0.95rem;
+    }
+
+    /* 600 Cards Grid (Image 2) */
+    .cartela-scroll-box {
+      background: rgba(255, 255, 255, 0.4);
+      border: 2px solid rgba(255,255,255,0.7);
+      border-radius: 12px;
+      padding: 8px;
+      max-height: 480px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 5px;
+    }
+
+    .cartela-node {
+      background: var(--orange-btn);
+      color: #fff;
       border-radius: 6px;
+      aspect-ratio: 1;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .cartela-node.selected {
+      background: #2e7d32;
+      border: 2px solid #fff;
+      transform: scale(0.95);
+    }
+
+    .cartela-node.taken {
+      background: #888;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Bottom Navigation Tabs */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: #fff;
+      display: flex;
+      border-top: 1px solid #ddd;
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      font-size: 0.75rem;
+      cursor: pointer;
+      gap: 2px;
+    }
+
+    .nav-item.active {
+      color: var(--card-purple);
+      font-weight: bold;
+    }
+
+    .nav-item .icon {
+      font-size: 1.2rem;
+    }
+
+    /* GAME VIEW (Image 1) */
+    .game-arena {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+
+    /* Left Table (1-75) */
+    .left-board-col {
+      width: 42%;
+      background: rgba(255, 255, 255, 0.45);
+      border-radius: 8px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bingo-header-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      text-align: center;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .bingo-header-row .b-let { background: #f57c00; border-radius: 4px; padding: 2px; }
+    .bingo-header-row .i-let { background: #2e7d32; border-radius: 4px; padding: 2px; }
+    .bingo-header-row .n-let { background: #1565c0; border-radius: 4px; padding: 2px; }
+    .bingo-header-row .g-let { background: #c62828; border-radius: 4px; padding: 2px; }
+    .bingo-header-row .o-let { background: #4a148c; border-radius: 4px; padding: 2px; }
+
+    .bingo-table-cells {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+    }
+
+    .t-cell {
+      background: rgba(255,255,255,0.7);
+      border-radius: 4px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .t-cell.hit-green {
+      background: #2e7d32;
+      color: #fff;
+    }
+
+    .t-cell.hit-orange {
+      background: #f57c00;
+      color: #fff;
+    }
+
+    /* Right Section */
+    .right-game-col {
+      width: 58%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .current-call-box {
+      background: var(--card-purple);
+      border-radius: 20px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .call-title {
       font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .call-badge {
+      background: var(--orange-bright);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .recent-calls-row {
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      padding: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      align-items: center;
+    }
+
+    .ball-sm {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .controls-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .ctrl-tag {
+      background: var(--card-purple);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .auto-toggle {
+      background: #2e7d32;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
     }
-    .grid-cell.marked {
-      background: var(--cell-selected);
+
+    /* Player Cartela Display */
+    .user-cartelas-area {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      padding: 6px;
+      overflow-y: auto;
+      max-height: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .grid-cell.header {
-      background: transparent;
-      color: #f1c40f;
-      font-size: 1.1rem;
+
+    .active-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .card-top-lbl {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--card-purple);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .player-card-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+    }
+
+    .p-cell {
+      background: #ede7f6;
+      border-radius: 4px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .p-cell.marked {
+      background: var(--orange-btn);
+      color: #fff;
+    }
+
+    .p-cell.free {
+      background: #d32f2f;
+      color: #fff;
+      font-size: 0.6rem;
+    }
+
+    /* Bottom Action Controls (Image 1) */
+    .game-bottom-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-act {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+
+    .btn-leave { background: var(--red-btn); }
+    .btn-refresh { background: var(--blue-btn); }
+    .btn-bingo { background: var(--green-btn); font-size: 1.05rem; }
+
+    /* History & Wallet Screens */
+    .history-card, .wallet-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .tx-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.85rem;
+    }
+
+    .tx-in { color: #2e7d32; font-weight: bold; }
+    .tx-out { color: #c62828; font-weight: bold; }
+
+    /* Modal / Alert */
+    .custom-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      width: 85%;
+      max-width: 320px;
+      text-align: center;
+    }
+
+    .modal-content h3 {
+      color: var(--card-purple);
+      margin-bottom: 10px;
+    }
+
+    .modal-content button {
+      background: var(--card-purple);
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="welcomeView" class="view active">
-      <h1 class="title">Welcome to Sefi<br />Bingo</h1>
-      <div class="card-panel">
-        <div class="subtitle">Choose Your Stake</div>
-        <button id="playBtn" class="btn-primary" type="button">
-          <span>Play 10 No 1</span>
-          <span>&#9654;</span>
-        </button>
-      </div>
-    </div>
 
-    <div id="lobbyView" class="view">
-      <div id="timerDisplay" class="timer-banner">Time left: 30s</div>
-      <div class="card-panel">
-        <div class="subtitle">Select Cartela (1 - 600, Max 3)</div>
-        <div class="cartela-input-group">
-          <input type="number" id="cartelaInput" min="1" max="600" placeholder="Card #" />
-          <button id="addCardBtn" class="btn-secondary" type="button">Add</button>
-        </div>
-        <div id="selectedCards" class="selected-cartelas"></div>
-        <button id="startNowBtn" class="btn-primary" type="button" style="justify-content: center;">
-          Start Game
-        </button>
-      </div>
-    </div>
+<div id="app-container">
+  <!-- Top Title Bar -->
+  <div class="top-header">
+    <span class="close-btn" onclick="switchView('gameSelectionView')">&times;</span>
+    <span>Afro Bingo</span>
+    <span>&#8942;</span>
+  </div>
 
-    <div id="gameView" class="view">
-      <div id="calledBall" class="called-ball">--</div>
-      <div class="subtitle" id="gameStatus">Drawing numbers...</div>
-      <div id="gridContainer" class="bingo-grid"></div>
-      <button id="claimBingoBtn" class="btn-primary" type="button" style="justify-content: center; background: #e74c3c;">
-        BINGO!
-      </button>
+  <!-- Stats Header (Shared) -->
+  <div class="stats-ribbon">
+    <div class="stat-pill btn-pill" onclick="leaveGame()">
+      <span class="lbl">Leave</span>
+      <span class="val">&larr;</span>
+    </div>
+    <div class="stat-pill">
+      <span class="lbl" id="statusHeaderLbl">Status</span>
+      <span class="val" id="countdownVal">00:30</span>
+    </div>
+    <div class="stat-pill">
+      <span class="lbl">Players</span>
+      <span class="val" id="playersVal">280</span>
+    </div>
+    <div class="stat-pill">
+      <span class="lbl">Derash (80%)</span>
+      <span class="val" id="derashVal">2240 ETB</span>
+    </div>
+    <div class="stat-pill">
+      <span class="lbl">Wallet</span>
+      <span class="val" id="walletTopVal">10 ETB</span>
     </div>
   </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      let countdown = 30;
-      let timerInterval = null;
-      let drawInterval = null;
-      const selectedCards = [];
-      const drawnNumbers = [];
 
-      const welcomeView = document.getElementById("welcomeView");
-      const lobbyView = document.getElementById("lobbyView");
-      const gameView = document.getElementById("gameView");
-      const playBtn = document.getElementById("playBtn");
-      const addCardBtn = document.getElementById("addCardBtn");
-      const startNowBtn = document.getElementById("startNowBtn");
-      const cartelaInput = document.getElementById("cartelaInput");
-      const selectedCardsEl = document.getElementById("selectedCards");
-      const timerDisplay = document.getElementById("timerDisplay");
-      const calledBall = document.getElementById("calledBall");
-      const gameStatus = document.getElementById("gameStatus");
-      const gridContainer = document.getElementById("gridContainer");
-      const claimBingoBtn = document.getElementById("claimBingoBtn");
+  <!-- VIEW 1: Selection (600 Cards Grid) -->
+  <div id="gameSelectionView" class="view-section active">
+    <div class="selection-subbar">
+      <span class="boards-badge" id="boardsCountLbl">Boards: 0/3</span>
+      <span class="stake-title">Stake: 10 ETB</span>
+    </div>
 
-      function switchView(target) {
-        [welcomeView, lobbyView, gameView].forEach((v) => v.classList.remove("active"));
-        target.classList.add("active");
+    <div class="cartela-scroll-box" id="cartelaGrid">
+      <!-- 1-600 Cards will load here -->
+    </div>
+  </div>
+
+  <!-- VIEW 2: Active Bingo Game Arena -->
+  <div id="activeGameView" class="view-section">
+    <div class="game-arena">
+      <!-- Left side: 1-75 full board -->
+      <div class="left-board-col">
+        <div class="bingo-header-row">
+          <div class="b-let">B</div>
+          <div class="i-let">I</div>
+          <div class="n-let">N</div>
+          <div class="g-let">G</div>
+          <div class="o-let">O</div>
+        </div>
+        <div class="bingo-table-cells" id="board75Cells">
+          <!-- 1-75 generated dynamically -->
+        </div>
+      </div>
+
+      <!-- Right side: Current call, recent balls & player cartelas -->
+      <div class="right-game-col">
+        <div class="current-call-box">
+          <span class="call-title">Current Call</span>
+          <span class="call-badge" id="currentCallBadge">--</span>
+        </div>
+
+        <div class="recent-calls-row" id="recentCallsBox">
+          <span style="font-size: 0.75rem; color: #555;">Waiting...</span>
+        </div>
+
+        <div class="controls-strip">
+          <div class="ctrl-tag">&#128266; Sound</div>
+          <div class="ctrl-tag">Stake 10</div>
+          <div class="auto-toggle" id="autoMarkBtn" onclick="toggleAutoMark()">Auto ON</div>
+        </div>
+
+        <!-- Selected Player Cartelas -->
+        <div class="user-cartelas-area" id="userCartelasContainer">
+          <!-- User 5x5 matrices will render here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="game-bottom-actions">
+      <button class="btn-act btn-leave" onclick="leaveGame()">&larr; Leave</button>
+      <button class="btn-act btn-refresh" onclick="location.reload()">&#8635; Refresh</button>
+      <button class="btn-act btn-bingo" onclick="checkBingoClaim()">BINGO!</button>
+    </div>
+  </div>
+
+  <!-- VIEW 3: Wallet View -->
+  <div id="walletView" class="view-section">
+    <div class="wallet-card">
+      <h2>የሂሳብ ቋት (Wallet)</h2>
+      <p style="margin: 10px 0; font-size: 1.2rem;">ያለዎት ቀሪ ሂሳብ: <strong id="walletPageBal">10</strong> ETB</p>
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-act btn-bingo" onclick="openDepositModal()">Deposit</button>
+        <button class="btn-act btn-refresh" onclick="openWithdrawModal()">Withdraw</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: History View -->
+  <div id="historyView" class="view-section">
+    <div class="history-card">
+      <h3>የግብይት ታሪክ (Transaction History)</h3>
+      <div id="txList" style="margin-top: 10px;">
+        <!-- Records -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchNav('game')">
+      <span class="icon">&#127918;</span>
+      <span>Game</span>
+    </div>
+    <div class="nav-item" onclick="switchNav('history')">
+      <span class="icon">&#128338;</span>
+      <span>History</span>
+    </div>
+    <div class="nav-item" onclick="switchNav('wallet')">
+      <span class="icon">&#128091;</span>
+      <span>Wallet</span>
+    </div>
+    <div class="nav-item" onclick="switchNav('profile')">
+      <span class="icon">&#128100;</span>
+      <span>Profile</span>
+    </div>
+  </div>
+</div>
+
+<!-- Alert Modal -->
+<div class="custom-modal" id="msgModal">
+  <div class="modal-content">
+    <h3 id="modalTitle">ማስታወሻ</h3>
+    <p id="modalBodyText" style="font-size: 0.9rem; line-height: 1.4;"></p>
+    <button onclick="closeModal()">እሺ</button>
+  </div>
+</div>
+
+<script>
+  // Game Configuration & State
+  const STAKE = 10;
+  let wallet = 10; // Welcome Bonus 10 ETB
+  let historyLogs = [
+    { type: 'in', desc: 'Welcome Bonus', amount: 10, date: new Date().toLocaleTimeString() }
+  ];
+
+  let selectedCartelas = []; // Max 3
+  let lobbyTimer = 30;
+  let lobbyInterval = null;
+  let gameInterval = null;
+  let isGameActive = false;
+  let autoMark = true;
+
+  let drawnBalls = [];
+  let currentBall = null;
+
+  // Bot & Player Calculations
+  let currentPlayersCount = Math.floor(Math.random() * (120 - 40 + 1)) + 40; // Random 40-120 players
+  let derashAmount = 0; // 80% to players, 20% to bot
+
+  // Audio effect
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function beep(freq = 600, duration = 120) {
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = freq;
+      osc.start();
+      setTimeout(() => osc.stop(), duration);
+    } catch(e) {}
+  }
+
+  // Init App
+  window.addEventListener('DOMContentLoaded', () => {
+    updateWalletUI();
+    render600CartelaGrid();
+    render75MasterBoard();
+    startLobbyCountdown();
+    renderHistory();
+  });
+
+  // Calculate Stake & Derash
+  function calculateEconomy() {
+    const totalPool = (currentPlayersCount + selectedCartelas.length) * STAKE;
+    derashAmount = Math.floor(totalPool * 0.80); // 80% to winners
+    const botRevenue = totalPool - derashAmount;   // 20% to bot revenue
+
+    document.getElementById('playersVal').innerText = currentPlayersCount + selectedCartelas.length;
+    document.getElementById('derashVal').innerText = derashAmount + ' ETB';
+  }
+
+  // Update Wallets
+  function updateWalletUI() {
+    document.getElementById('walletTopVal').innerText = wallet + ' ETB';
+    document.getElementById('walletPageBal').innerText = wallet;
+  }
+
+  // Render 1 - 600 Cartelas
+  function render600CartelaGrid() {
+    const container = document.getElementById('cartelaGrid');
+    container.innerHTML = '';
+    for (let i = 1; i <= 600; i++) {
+      const node = document.createElement('div');
+      node.className = 'cartela-node';
+      node.innerText = i;
+      node.onclick = () => toggleSelectCartela(i, node);
+      container.appendChild(node);
+    }
+  }
+
+  // Cartela Selection (Max 3)
+  function toggleSelectCartela(cardNum, el) {
+    if (isGameActive) return;
+
+    const idx = selectedCartelas.indexOf(cardNum);
+    if (idx > -1) {
+      selectedCartelas.splice(idx, 1);
+      el.classList.remove('selected');
+    } else {
+      if (selectedCartelas.length >= 3) {
+        showModal("ማስጠንቀቂያ", "በአንድ ዙር መምረጥ የሚችሉት ከፍተኛው 3 ካርቴላ ብቻ ነው!");
+        return;
       }
-
-      playBtn.onclick = function() {
-        switchView(lobbyView);
-        countdown = 30;
-        timerDisplay.textContent = `Time left: ${countdown}s`;
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-          countdown--;
-          timerDisplay.textContent = `Time left: ${countdown}s`;
-          if (countdown <= 0) {
-            clearInterval(timerInterval);
-            initGame();
-          }
-        }, 1000);
-      };
-
-      addCardBtn.onclick = function() {
-        const val = parseInt(cartelaInput.value, 10);
-        if (isNaN(val) || val < 1 || val > 600) {
-          alert("ከ 1 እስከ 600 ያለ ቁጥር ያስገቡ።");
-          return;
-        }
-        if (selectedCards.includes(val)) {
-          alert("ይህ ካርቴላ ተመርጧል።");
-          return;
-        }
-        if (selectedCards.length >= 3) {
-          alert("ከ 3 በላይ መምረጥ አይቻልም።");
-          return;
-        }
-        selectedCards.push(val);
-        renderCardBadges();
-        cartelaInput.value = "";
-      };
-
-      function renderCardBadges() {
-        selectedCardsEl.innerHTML = "";
-        selectedCards.forEach((c) => {
-          const badge = document.createElement("div");
-          badge.className = "badge";
-          badge.innerHTML = `Card #${c} <span style="cursor:pointer;font-weight:bold;">&times;</span>`;
-          badge.querySelector("span").onclick = function() {
-            const idx = selectedCards.indexOf(c);
-            if (idx > -1) selectedCards.splice(idx, 1);
-            renderCardBadges();
-          };
-          selectedCardsEl.appendChild(badge);
-        });
+      // Check wallet balance
+      const required = (selectedCartelas.length + 1) * STAKE;
+      if (wallet < required) {
+        showModal("ቀሪ ሂሳብ የለም", "እባክዎ ዲፖዚት አድርገው እንደገና ይሞክሩ!");
+        return;
       }
+      selectedCartelas.push(cardNum);
+      el.classList.add('selected');
+    }
 
-      startNowBtn.onclick = function() {
-        clearInterval(timerInterval);
-        initGame();
-      };
+    document.getElementById('boardsCountLbl').innerText = `Boards: ${selectedCartelas.length}/3`;
+    calculateEconomy();
+  }
 
-      function generateBingoCard(seed) {
-        const cols = { B: [], I: [], N: [], G: [], O: [] };
-        const ranges = [[1, 15], [16, 30], [31, 45], [46, 60], [61, 75]];
-        const keys = ["B", "I", "N", "G", "O"];
-        keys.forEach((k, idx) => {
-          const pool = [];
-          for (let n = ranges[idx][0]; n <= ranges[idx][1]; n++) pool.push(n);
-          let currentSeed = seed + idx * 100;
-          for (let i = pool.length - 1; i > 0; i--) {
-            currentSeed = (currentSeed * 9301 + 49297) % 233280;
-            const j = Math.floor((currentSeed / 233280) * (i + 1));
-            [pool[i], pool[j]] = [pool[j], pool[i]];
-          }
-          cols[k] = pool.slice(0, 5);
-        });
-        cols["N"][2] = "FREE";
-        return cols;
+  // Render 1 - 75 Master Board (Columns B, I, N, G, O)
+  function render75MasterBoard() {
+    const container = document.getElementById('board75Cells');
+    container.innerHTML = '';
+    // Standard rows: 15 rows, 5 columns (B:1-15, I:16-30, N:31-45, G:46-60, O:61-75)
+    for (let r = 0; r < 15; r++) {
+      for (let c = 0; c < 5; c++) {
+        const num = (c * 15) + (r + 1);
+        const cell = document.createElement('div');
+        cell.className = 't-cell';
+        cell.id = `master-cell-${num}`;
+        cell.innerText = num;
+        container.appendChild(cell);
       }
+    }
+  }
 
-      function initGame() {
-        if (selectedCards.length === 0) selectedCards.push(1);
-        switchView(gameView);
-        const cardData = generateBingoCard(selectedCards[0]);
-        renderBoard(cardData);
-        startDrawing();
-      }
+  // Lobby Timer (30s)
+  function startLobbyCountdown() {
+    lobbyTimer = 30;
+    document.getElementById('statusHeaderLbl').innerText = 'Preparing...';
+    calculateEconomy();
 
-      function renderBoard(cols) {
-        gridContainer.innerHTML = "";
-        const headers = ["B", "I", "N", "G", "O"];
-        headers.forEach((h) => {
-          const cell = document.createElement("div");
-          cell.className = "grid-cell header";
-          cell.textContent = h;
-          gridContainer.appendChild(cell);
-        });
-        for (let row = 0; row < 5; row++) {
-          headers.forEach((colKey) => {
-            const val = cols[colKey][row];
-            const cell = document.createElement("div");
-            cell.className = "grid-cell" + (val === "FREE" ? " marked" : "");
-            cell.textContent = val;
-            cell.onclick = function() {
-              if (val === "FREE" || drawnNumbers.includes(val)) {
-                cell.classList.toggle("marked");
-              }
-            };
-            gridContainer.appendChild(cell);
-          });
-        }
-      }
+    if (lobbyInterval) clearInterval(lobbyInterval);
+    lobbyInterval = setInterval(() => {
+      lobbyTimer--;
+      document.getElementById('countdownVal').innerText = `00:${lobbyTimer < 10 ? '0' : ''}${lobbyTimer}`;
 
-      function startDrawing() {
-        const pool = [];
-        for (let i = 1; i <= 75; i++) pool.push(i);
-        pool.sort(() => Math.random() - 0.5);
-        drawInterval = setInterval(() => {
-          if (pool.length === 0) {
-            clearInterval(drawInterval);
-            gameStatus.textContent = "ጨዋታው አልቋል!";
-            return;
-          }
-          const num = pool.pop();
-          drawnNumbers.push(num);
-          calledBall.textContent = num;
-          gameStatus.textContent = `የወጡ ቁጥሮች: ${drawnNumbers.length}/75`;
-        }, 3000);
-      }
-
-      claimBingoBtn.onclick = function() {
-        alert("ቢንጎ! መስመሩ በትክክል ተረጋግጧል!");
-      };
-    });
-  </script>
-</body>
-</html>
+      if (lobbyTimer 
