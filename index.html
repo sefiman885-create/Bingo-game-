@@ -688,4 +688,68 @@
         utterance.lang = 'am-ET';
         utterance.rate = 0.85;
         window.speechSynthesis.speak(utterance);
+
+        <!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sefi Bingo - Test 600</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background: #f4f4f4;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .card-box {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .card-box.active {
+      background: #e67e22;
+      color: white;
+      border-color: #d35400;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>የካርቴላ መምረጫ (1 - 600)</h2>
+  <div class="grid-container" id="cardsGrid"></div>
+
+  <script>
+    const container = document.getElementById('cardsGrid');
+    let elements = '';
+    
+    // 1 እስከ 600 ያሉ ቁጥሮችን በቅጽበት መጻፍ
+    for (let i = 1; i <= 600; i++) {
+      elements += `<div class="card-box" onclick="this.classList.toggle('active')">${i}</div>`;
+    }
+    
+    container.innerHTML = elements;
+  </script>
+
+</body>
+</html>
     
