@@ -1,491 +1,534 @@
+
 <!DOCTYPE html>
 <html lang="am">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sefi Bingo</title>
-  <style>
-    :root {
-      --bg-dark: #2a1635;
-      --card-bg: #4a215d;
-      --header-bg: #3d144e;
-      --accent-orange: #f36c21;
-      --accent-green: #1ca347;
-      --accent-yellow: #ffeb3b;
-      --text-white: #ffffff;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEFI BINGO</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      user-select: none;
-    }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-white);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .top-header {
-      background-color: #1a0b22;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .status-ribbon {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-      gap: 6px;
-      padding: 8px 10px;
-      background: var(--header-bg);
-      align-items: center;
-    }
-
-    .ribbon-box {
-      background: #2a0b36;
-      border: 1px solid #632c7a;
-      border-radius: 8px;
-      padding: 6px 4px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 50px;
-    }
-
-    .ribbon-box .title {
-      font-size: 11px;
-      color: #c084fc;
-      margin-bottom: 2px;
-    }
-
-    .ribbon-box .value {
-      font-size: 13px;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    .hidden-panel {
-      display: none !important;
-    }
-
-    .call-banner {
-      background: linear-gradient(90deg, #4a154b, #2f0743);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 6px 12px;
-      border-radius: 12px;
-    }
-
-    .call-badge {
-      background: var(--accent-orange);
-      color: white;
-      font-size: 22px;
-      font-weight: 900;
-      padding: 6px 20px;
-      border-radius: 20px;
-    }
-
-    .main-stage {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .bingo-board {
-      width: 100%;
-      max-width: 380px;
-      background: #ffffff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-
-    .bingo-header {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      text-align: center;
-      font-weight: 900;
-      font-size: 20px;
-      color: white;
-    }
-
-    .col-B { background: #f59e0b; }
-    .col-I { background: #10b981; }
-    .col-N { background: #3b82f6; }
-    .col-G { background: #ef4444; }
-    .col-O { background: #8b5cf6; }
-
-    .bingo-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 3px;
-      background: #d1d5db;
-      padding: 4px;
-    }
-
-    .bingo-cell {
-      background: #ffffff;
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: bold;
-      color: #1f2937;
-      border-radius: 4px;
-    }
-
-    .bingo-cell.hit {
-      background: var(--accent-yellow);
-      color: #000;
-    }
-
-    .bingo-cell.winning-line {
-      background: var(--accent-green) !important;
-      color: #fff !important;
-    }
-
-    .bingo-cell.free {
-      background: var(--accent-green);
-      color: white;
-      font-size: 24px;
-    }
-
-    .winner-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(20, 5, 30, 0.95);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 20px;
-    }
-
-    .winner-card {
-      background: #e9d5ff;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 350px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .winner-banner {
-      background: var(--accent-orange);
-      color: white;
-      width: 100%;
-      text-align: center;
-      padding: 12px 0;
-      border-radius: 12px;
-      font-size: 26px;
-      font-weight: 900;
-    }
-
-    .winner-player-tag {
-      background: #0ea5e9;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-weight: bold;
-      margin: 12px 0;
-    }
-
-    .winner-board-number {
-      color: #15803d;
-      font-weight: 900;
-      font-size: 16px;
-      margin: 10px 0;
-    }
-
-    .winner-timer-box {
-      background: var(--accent-orange);
-      width: 100%;
-      padding: 10px 0;
-      text-align: center;
-      border-radius: 12px;
-      font-size: 32px;
-      font-weight: 900;
-      color: white;
-    }
-
-    .spectator-badge {
-      background: #059669;
-      color: white;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      margin: 4px auto;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#c4a7d0;
+ color:#40104e;
+}
+header{
+ background:#750080;
+ color:white;
+ padding:18px;
+ text-align:center;
+ font-size:25px;
+ font-weight:bold;
+}
+.page{padding:15px;display:none}
+.active{display:block}
+.welcome{
+ margin:35px 5px;
+ padding:30px 10px;
+ text-align:center;
+ color:white;
+ font-size:34px;
+ font-weight:bold;
+ border-radius:30px;
+ background:linear-gradient(130deg,#a000a9,#510064);
+}
+.wallet{
+ background:#800080;
+ color:white;
+ padding:17px;
+ margin:20px auto;
+ border-radius:30px;
+ text-align:center;
+ width:65%;
+ font-weight:bold;
+}
+.box{
+ border:3px solid #87008d;
+ border-radius:30px;
+ padding:15px;
+ text-align:center;
+}
+.stake{
+ display:block;
+ width:100%;
+ margin:15px 0;
+ padding:20px;
+ border:0;
+ border-radius:50px;
+ color:white;
+ font-size:23px;
+ font-weight:bold;
+ background:#299b83;
+}
+.stake:nth-of-type(2){background:#e17d35}
+button{cursor:pointer}
+.top{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:5px;
+}
+.top button{
+ border:0;
+ padding:13px 2px;
+ border-radius:12px;
+ font-weight:bold;
+ background:white;
+ color:#62006d;
+}
+.info{
+ display:flex;
+ justify-content:space-between;
+ font-weight:bold;
+ color:green;
+ margin:15px 0;
+}
+.gamegrid{
+ display:grid;
+ grid-template-columns:1fr 1.5fr;
+ gap:8px;
+}
+.card{
+ background:#b9acd0;
+ border:2px solid white;
+ border-radius:10px;
+ padding:5px;
+}
+.bingo{
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:5px;
+}
+.cell{
+ min-width:0;
+ height:40px;
+ border:1px solid white;
+ border-radius:9px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
+ background:#b7b1d0;
+ color:#292238;
+}
+.cell.marked{
+ background:#ff8900;
+ color:#222;
+}
+.bhead{
+ background:#85008a;
+ color:white;
+ font-weight:bold;
+}
+.bhead:nth-child(1){background:orange}
+.bhead:nth-child(2){background:green}
+.bhead:nth-child(3){background:blue}
+.bhead:nth-child(4){background:red}
+.bhead:nth-child(5){background:#71006f}
+.right{text-align:center}
+.callbox{
+ background:#790080;
+ color:white;
+ padding:20px 5px;
+ border-radius:40px;
+ font-size:22px;
+ font-weight:bold;
+ margin-bottom:15px;
+}
+.number{
+ margin:15px auto;
+ width:75px;
+ height:75px;
+ background:#ff8500;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ font-size:35px;
+ color:white;
+}
+.control{
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+ background:#ddd0e9;
+ padding:12px 2px;
+ border-radius:15px;
+}
+.control button{
+ border:0;
+ padding:8px;
+ background:#790080;
+ color:white;
+ border-radius:10px;
+}
+.message{
+ margin-top:20px;
+ background:#b9a9d0;
+ border-radius:15px;
+ min-height:180px;
+ padding:20px;
+ font-size:20px;
+ font-weight:bold;
+}
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:0;
+ width:100%;
+ background:#d5c1df;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ padding:10px 3px;
+ border-top:2px solid white;
+}
+.bottom button{
+ background:none;
+ border:0;
+ color:#650078;
+ font-weight:bold;
+ padding:10px 0;
+}
+.bottom button.selected{
+ background:#790080;
+ color:white;
+ border-radius:18px;
+}
+.actions{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:5px;
+ margin-top:15px;
+}
+.actions button{
+ padding:14px 2px;
+ border:0;
+ border-radius:15px;
+ background:#800080;
+ color:white;
+ font-weight:bold;
+}
+#calledList{
+ display:flex;
+ flex-wrap:wrap;
+ gap:5px;
+ margin-top:15px;
+}
+#calledList span{
+ padding:8px;
+ border-radius:8px;
+ background:#ff8900;
+ color:black;
+}
+@media(max-width:380px){
+ .cell{height:34px;font-size:12px}
+ .gamegrid{grid-template-columns:1fr 1.25fr}
+}
+</style>
 </head>
+
 <body>
 
-  <div class="top-header">
-    <span>✕</span>
-    <span>Sefi Bingo</span>
-    <span>⋮</span>
-  </div>
+<header>🎮 SEFI BINGO</header>
 
-  <div class="status-ribbon">
-    <div class="ribbon-box">
-      <span class="title" id="stageLabel">Preparing...</span>
-      <span class="value" id="timerDisplay">00:30</span>
-    </div>
-    
-    <!-- Lobby ውስጥ ተደብቀው ጨዋታ ሲጀመር ብቻ የሚታዩ -->
-    <div class="ribbon-box hidden-panel" id="playersPanel">
-      <span class="title">Players</span>
-      <span class="value" id="playersCount">0</span>
-    </div>
+<!-- HOME -->
+<section id="home" class="page active">
 
-    <div class="ribbon-box hidden-panel" id="derashPanel">
-      <span class="title">Derash (80%)</span>
-      <span class="value" id="derashValue">0 ETB</span>
-    </div>
+<div class="welcome">
+Welcome<br>to<br>SEFI BINGO
+</div>
 
-    <div class="ribbon-box">
-      <span class="title">Wallet</span>
-      <span class="value" id="walletBalance">0 ETB</span>
-    </div>
-  </div>
+<div class="wallet">
+💳 Wallet: <span id="homeWallet">1000</span> Points
+</div>
 
-  <div id="spectatorNotice" class="spectator-badge">👁️ ተመልካች ሁነታ (Spectator Mode)</div>
+<div class="box">
+<h2>Choose Your Game</h2>
 
-  <div class="call-banner">
-    <div>የተጠራው ቁጥር:</div>
-    <div class="call-badge" id="currentCall">--</div>
-  </div>
+<button class="stake" onclick="startGame(10)">
+▶ Play — 10 Points
+</button>
 
-  <div class="main-stage">
-    <div class="bingo-board">
-      <div class="bingo-header">
-        <div class="col-B">B</div>
-        <div class="col-I">I</div>
-        <div class="col-N">N</div>
-        <div class="col-G">G</div>
-        <div class="col-O">O</div>
-      </div>
-      <div class="bingo-grid" id="playerBoardGrid"></div>
-    </div>
-  </div>
+<button class="stake" onclick="startGame(20)">
+▶ Play — 20 Points
+</button>
+</div>
+</section>
 
-  <!-- Winner Modal -->
-  <div class="winner-overlay" id="winnerModal">
-    <div class="winner-card">
-      <div class="winner-banner">BINGO!</div>
-      <div class="winner-player-tag" id="winnerNameTag">ቡቡዬ has won the game.</div>
-      
-      <div class="bingo-board" style="width: 100%;">
-        <div class="bingo-header">
-          <div class="col-B">B</div>
-          <div class="col-I">I</div>
-          <div class="col-N">N</div>
-          <div class="col-G">G</div>
-          <div class="col-O">O</div>
-        </div>
-        <div class="bingo-grid" id="winnerCardGrid"></div>
-      </div>
+<!-- GAME -->
+<section id="game" class="page">
 
-      <div class="winner-board-number" id="winnerBoardNo">Board Number 527</div>
-      <div class="winner-timer-box" id="modalCountdown">10</div>
-    </div>
-  </div>
+<div class="top">
+<button onclick="leaveGame()">↩ Leave</button>
+<button id="timer">30</button>
+<button>Wallet<br><span id="wallet">1000</span></button>
+<button>Stake<br><span id="stake">10</span></button>
+</div>
 
-  <script>
-    const STAKE_PER_PLAYER = 10;
-    const WINNER_SHARE = 0.80;
-    let actualPlayers = 30; // እውነተኛ ተጫዋቾች ቁጥር
+<div class="info">
+<span>Boards: 1/1</span>
+<span>SEFI BINGO</span>
+</div>
 
-    let calledNumbers = new Set();
-    let callInterval = null;
+<div class="gamegrid">
 
-    // የአማርኛ ቁጥር መተርጎሚያ ስርዓት (1 እስከ 75)
-    function convertNumberToAmharic(num) {
-      const units = ["", "አንድ", "ሁለት", "ሦስት", "አራት", "አምስት", "ስድስት", "ሰባት", "ስምንት", "ዘጠኝ"];
-      const teens = ["አስር", "አስራ አንድ", "አስራ ሁለት", "አስራ ሦስት", "አስራ አራት", "አስራ አምስት", "አስራ ስድስት", "አስራ ሰባት", "አስራ ስምንት", "አስራ ዘጠኝ"];
-      const tens = ["", "", "ሃያ", "ሰላሳ", "አርባ", "ሃምሳ", "ስድሳ", "ሰባ", "ሰማንያ", "ዘጠና"];
+<div class="card">
+<div class="bingo" id="myCard"></div>
+</div>
 
-      if (num < 10) return units[num];
-      if (num >= 10 && num < 20) return teens[num - 10];
-      
-      const ten = Math.floor(num / 10);
-      const unit = num % 10;
-      return unit === 0 ? tens[ten] : `${tens[ten]} ${units[unit]}`;
-    }
+<div class="right">
 
-    // በአማርኛ ድምፅ መጥሪያ
-    function speakAmharic(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'am-ET';
-        utterance.rate = 0.85;
-        window.speechSynthesis.speak(utterance);
-      }
-    }
+<div class="callbox">
+<span id="status">Ready</span>
+<div class="number" id="current">--</div>
+</div>
 
-    function callAmharicNumber(letter, number) {
-      const amharicLetters = { 'B': 'ቢ', 'I': 'አይ', 'N': 'ኤን', 'G': 'ጂ', 'O': 'ኦ' };
-      const spokenLetter = amharicLetters[letter] || letter;
-      const spokenNumber = convertNumberToAmharic(number);
-      speakAmharic(`${spokenLetter}፣ ${spokenNumber}`);
-    }
+<div class="control">
+<button onclick="soundToggle()">🔊 Sound</button>
+<button onclick="toggleAuto()" id="auto">Auto OFF</button>
+</div>
 
-    function generateBoard() {
-      const ranges = { B: [1, 15], I: [16, 30], N: [31, 45], G: [46, 60], O: [61, 75] };
-      const board = { B: [], I: [], N: [], G: [], O: [] };
-      for (let col in ranges) {
-        let pool = [];
-        for (let i = ranges[col][0]; i <= ranges[col][1]; i++) pool.push(i);
-        pool.sort(() => Math.random() - 0.5);
-        board[col] = pool.slice(0, 5);
-      }
-      return board;
-    }
+<div class="message" id="message">
+Welcome to SEFI BINGO!
+</div>
 
-    function renderBoard(containerId, boardData, winningIndices = []) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = "";
-      const letters = ['B', 'I', 'N', 'G', 'O'];
+<div id="calledList"></div>
+</div>
+</div>
 
-      for (let row = 0; row < 5; row++) {
-        for (let c = 0; c < 5; c++) {
-          const colLetter = letters[c];
-          const cell = document.createElement("div");
-          cell.className = "bingo-cell";
-          const cellIndex = row * 5 + c;
+<div class="actions">
+<button style="background:#d00019" onclick="leaveGame()">↩ Leave</button>
+<button style="background:#164fe4" onclick="newGame()">↻ Refresh</button>
+<button style="background:#25834a" onclick="toggleAuto()">Automatic</button>
+</div>
 
-          if (row === 2 && c === 2) {
-            cell.innerHTML = "★";
-            cell.classList.add("free");
-          } else {
-            const val = boardData[colLetter][row];
-            cell.innerText = val;
-            cell.dataset.value = val;
-            if (calledNumbers.has(val)) cell.classList.add("hit");
-          }
+</section>
 
-          if (winningIndices.includes(cellIndex)) {
-            cell.classList.add("winning-line");
-          }
+<!-- HISTORY -->
+<section id="history" class="page">
+<h2>📜 Game History</h2>
+<div id="historyList">No games played yet.</div>
+</section>
 
-          container.appendChild(cell);
-        }
-      }
-    }
+<!-- WALLET -->
+<section id="walletPage" class="page">
+<h2>💳 My Wallet</h2>
+<div class="wallet">
+Your Points<br>
+<h1 id="walletBalance">1000</h1>
+</div>
+<p>Free demo points only.</p>
+</section>
 
-    const myBoard = generateBoard();
-    renderBoard("playerBoardGrid", myBoard);
+<!-- PROFILE -->
+<section id="profile" class="page">
+<h2>👤 My Profile</h2>
+<h3>SEFI MAN</h3>
+<p>Welcome to SEFI BINGO</p>
+<p>Version 1.0</p>
+</section>
 
-    // 1. ሎቢ (30 ሰከንድ ቆጣሪ)
-    function startLobby() {
-      document.getElementById("stageLabel").innerText = "Preparing...";
-      document.getElementById("playersPanel").classList.add("hidden-panel");
-      document.getElementById("derashPanel").classList.add("hidden-panel");
+<nav class="bottom">
+<button class="selected" onclick="showPage('home',this)">🎮<br>Game</button>
+<button onclick="showPage('history',this)">◷<br>History</button>
+<button onclick="showPage('walletPage',this)">▣<br>Wallet</button>
+<button onclick="showPage('profile',this)">♙<br>Profile</button>
+</nav>
 
-      let remaining = 30;
-      const lobbyInterval = setInterval(() => {
-        remaining--;
-        const ss = String(remaining % 60).padStart(2, '0');
-        document.getElementById("timerDisplay").innerText = `00:${ss}`;
+<script>
+let balance=1000;
+let stake=10;
+let numbers=[];
+let called=[];
+let card=[];
+let timer=30;
+let auto=false;
+let interval=null;
+let sound=true;
+let history=[];
 
-        if (remaining <= 0) {
-          clearInterval(lobbyInterval);
-          startGameplay();
-        }
-      }, 1000);
-    }
+function showPage(id,btn){
+ stopAuto();
+ document.querySelectorAll('.page').forEach(p=>
+ p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
 
-    // 2. ጨዋታው ሲጀመር (Players እና Derash ማሳየት)
-    function startGameplay() {
-      document.getElementById("stageLabel").innerText = "Live";
-      document.getElementById("timerDisplay").innerText = "Game ON";
+ document.querySelectorAll('.bottom button').forEach(b=>
+ b.classList.remove('selected'));
+ btn.classList.add('selected');
 
-      // Players እና Derash ማሳየት
-      document.getElementById("playersPanel").classList.remove("hidden-panel");
-      document.getElementById("derashPanel").classList.remove("hidden-panel");
+ updateWallet();
+}
 
-      const totalPool = actualPlayers * STAKE_PER_PLAYER;
-      const derash = Math.round(totalPool * WINNER_SHARE);
+function updateWallet(){
+ document.getElementById('wallet').textContent=balance;
+ document.getElementById('homeWallet').textContent=balance;
+ document.getElementById('walletBalance').textContent=balance;
+}
 
-      document.getElementById("playersCount").innerText = actualPlayers;
-      document.getElementById("derashValue").innerText = `${derash} ETB`;
+function startGame(amount){
+ stake=amount;
+ document.getElementById('stake').textContent=stake;
+ document.getElementById('home').classList.remove('active');
+ document.getElementById('game').classList.add('active');
+ newGame();
+}
 
-      let callCount = 0;
-      callInterval = setInterval(() => {
-        callCount++;
-        const cols = ['B', 'I', 'N', 'G', 'O'];
-        const col = cols[Math.floor(Math.random() * 5)];
-        const ranges = { B: [1,15], I: [16,30], N: [31,45], G: [46,60], O: [61,75] };
-        const num = Math.floor(Math.random() * (ranges[col][1] - ranges[col][0] + 1)) + ranges[col][0];
+function createCard(){
+ card=[];
+ let html='';
+ let letters=['B','I','N','G','O'];
 
-        calledNumbers.add(num);
-        document.getElementById("currentCall").innerText = `${col}-${num}`;
-        callAmharicNumber(col, num);
+ for(let col=0;col<5;col++){
+  let min=col*15+1;
+  let nums=[];
 
-        renderBoard("playerBoardGrid", myBoard);
+  while(nums.length<5){
+   let n=Math.floor(Math.random()*15)+min;
+   if(!nums.includes(n))nums.push(n);
+  }
 
-        // ለሙከራ በ15ኛው ጥሪ ላይ አሸናፊ ማውጣት
-        if (callCount >= 15) {
-          clearInterval(callInterval);
-          triggerWinner();
-        }
-      }, 3500);
-    }
+  card.push(nums);
+ }
 
-    // 3. አሸናፊ ሲኖር (ቢንጎ ማለት እና ካርቴላ ማሳየት)
-    function triggerWinner() {
-      speakAmharic("ቢንጎ! አሸናፊ ተገኝቷል!");
+ html+=letters.map(x=>`<div class="cell bhead">${x}</div>`).join('');
 
-      const modal = document.getElementById("winnerModal");
-      const countdownBox = document.getElementById("modalCountdown");
-      const winnerBoard = generateBoard();
+ for(let row=0;row<5;row++){
+  for(let col=0;col<5;col++){
+   let n=card[col][row];
+   html+=`<div class="cell" id="c${n}" onclick="mark(${n})">${n}</div>`;
+  }
+ }
 
-      // ያሸነፈበትን ረድፍ በአረንጓዴ ማሳየት (ለምሳሌ አግድም ረድፍ)
-      const winningRowIndices = [10, 11, 12, 13, 14];
-      renderBoard("winnerCardGrid", winnerBoard, winningRowIndices);
+ document.getElementById('myCard').innerHTML=html;
+}
 
-      modal.style.display = "flex";
+function newGame(){
+ stopAuto();
+ numbers=Array.from({length:75},(_,i)=>i+1);
+ called=[];
+ timer=30;
 
-      let seconds = 10;
-      countdownBox.innerText = seconds;
-      const modalTimer = setInterval(() => {
-        seconds--;
-        countdownBox.innerText = seconds;
+ document.getElementById('current').textContent='--';
+ document.getElementById('status').textContent='Ready';
+ document.getElementById('message').textContent='Good luck! Enjoy SEFI BINGO.';
+ document.getElementById('calledList').innerHTML='';
+ document.getElementById('timer').textContent=timer;
 
-        if (seconds <= 0) {
-          clearInterval(modalTimer);
-          modal.style.display = "none";
-          calledNumbers.clear();
-          startLobby(); // አዲስ ዙር መጀመር
-        }
-      }, 1000);
-    }
+ createCard();
+}
 
-    window.onload = startLobby;
-  </script>
+function callNumber(){
+ if(numbers.length===0){
+  stopAuto();
+  document.getElementById('status').textContent='Finished';
+  return;
+ }
+
+ let index=Math.floor(Math.random()*numbers.length);
+ let n=numbers.splice(index,1)[0];
+ called.push(n);
+
+ document.getElementById('current').textContent=n;
+ document.getElementById('status').textContent='Number Called';
+
+ let letter=['B','I','N','G','O'][Math.floor((n-1)/15)];
+
+ document.getElementById('message').textContent=
+ letter+' - '+n;
+
+ document.getElementById('calledList').innerHTML=
+ called.map(x=>`<span>${x}</span>`).join('');
+
+ document.getElementById('timer').textContent=timer;
+
+ if(sound){
+  try{
+   let audio=new AudioContext();
+   let osc=audio.createOscillator();
+   osc.connect(audio.destination);
+   osc.start();
+   osc.stop(audio.currentTime+.1);
+  }catch(e){}
+ }
+}
+
+function mark(n){
+ if(!called.includes(n)){
+  document.getElementById('message').textContent=
+  'ይህ ቁጥር ገና አልተጠራም!';
+  return;
+ }
+
+ let el=document.getElementById('c'+n);
+ if(el)el.classList.add('marked');
+
+ checkBingo();
+}
+
+function checkBingo(){
+ let marked=card.map(col=>col.filter(n=>
+ document.getElementById('c'+n)?.classList.contains('marked')
+ ));
+
+ for(let i=0;i<5;i++){
+  if(marked[i].length===5){
+   win();
+   return;
+  }
+ }
+
+ for(let row=0;row<5;row++){
+  if(card.every(col=>
+   document.getElementById('c'+col[row])
+   ?.classList.contains('marked'))){
+   win();
+   return;
+  }
+ }
+}
+
+function win(){
+ stopAuto();
+ document.getElementById('status').textContent='BINGO!';
+ document.getElementById('message').textContent=
+ '🎉 BINGO! Congratulations!';
+}
+
+function toggleAuto(){
+ if(auto){
+  stopAuto();
+ }else{
+  auto=true;
+  document.getElementById('auto').textContent='Auto ON';
+  interval=setInterval(()=>{
+   callNumber();
+  },3000);
+ }
+}
+
+function stopAuto(){
+ auto=false;
+ clearInterval(interval);
+ interval=null;
+ document.getElementById('auto').textContent='Auto OFF';
+}
+
+function soundToggle(){
+ sound=!sound;
+}
+
+function leaveGame(){
+ stopAuto();
+ history.push('SEFI BINGO - '+new Date().toLocaleString());
+ document.getElementById('historyList').innerHTML=
+ history.map(x=>'<p>'+x+'</p>').join('');
+ document.querySelectorAll('.page').forEach(p=>
+ p.classList.remove('active'));
+ document.getElementById('home').classList.add('active');
+}
+
+updateWallet();
+</script>
 </body>
 </html>
