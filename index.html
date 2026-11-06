@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sefi Bingo</title>
+  <style>
+    :root {
+      --primary: #4a154b;
+      --bg: #2c0d2d;
+      --card-bg: #3d143e;
+      --accent: #2ecc71;
+      --accent-hover: #27ae60;
+      --text: #ffffff;
+      --cell-selected: #e74c3c;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      user-select: none;
+    }
+    body {
+      background: radial-gradient(circle at top, var(--primary), var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .view {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    .view.active {
+      display: flex;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .card-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      margin-bottom: 16px;
+    }
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .timer-banner {
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      color: #f1c40f;
+    }
+    .cartela-input-group {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .cartela-input-group input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      font-size: 1rem;
+      text-align: center;
+    }
+    .btn-secondary {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .selected-cartelas {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      min-height: 38px;
+    }
+    .badge {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .called-ball {
+      font-size: 2.2rem;
+      font-weight: 800;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #e67e22;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .bingo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      width: 100%;
+      max-width: 320px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .grid-cell {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .grid-cell.marked {
+      background: var(--cell-selected);
+    }
+    .grid-cell.header {
+      background: transparent;
+      color: #f1c40f;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="welcomeView" class="view active">
+      <h1 class="title">Welcome to Sefi<br />Bingo</h1>
+      <div class="card-panel">
+        <div class="subtitle">Choose Your Stake</div>
+        <button id="playBtn" class="btn-primary" type="button">
+          <span>Play 10 No 1</span>
+          <span>&#9654;</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="lobbyView" class="view">
+      <div id="timerDisplay" class="timer-banner">Time left: 30s</div>
+      <div class="card-panel">
+        <div class="subtitle">Select Cartela (1 - 600, Max 3)</div>
+        <div class="cartela-input-group">
+          <input type="number" id="cartelaInput" min="1" max="600" placeholder="Card #" />
+          <button id="addCardBtn" class="btn-secondary" type="button">Add</button>
+        </div>
+        <div id="selectedCards" class="selected-cartelas"></div>
+        <button id="startNowBtn" class="btn-primary" type="button" style="justify-content: center;">
+          Start Game
+        </button>
+      </div>
+    </div>
+
+    <div id="gameView" class="view">
+      <div id="calledBall" class="called-ball">--</div>
+      <div class="subtitle" id="gameStatus">Drawing numbers...</div>
+      <div id="gridContainer" class="bingo-grid"></div>
+      <button id="claimBingoBtn" class="btn-primary" type="button" style="justify-content: center; background: #e74c3c;">
+        BINGO!
+      </button>
+    </div>
+  </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let countdown = 30;
+      let timerInterval = null;
+      let drawInterval = null;
+      const selectedCards = [];
+      const drawnNumbers = [];
+
+      const welcomeView = document.getElementById("welcomeView");
+      const lobbyView = document.getElementById("lobbyView");
+      const gameView = document.getElementById("gameView");
+      const playBtn = document.getElementById("playBtn");
+      const addCardBtn = document.getElementById("addCardBtn");
+      const startNowBtn = document.getElementById("startNowBtn");
+      const cartelaInput = document.getElementById("cartelaInput");
+      const selectedCardsEl = document.getElementById("selectedCards");
+      const timerDisplay = document.getElementById("timerDisplay");
+      const calledBall = document.getElementById("calledBall");
+      const gameStatus = document.getElementById("gameStatus");
+      const gridContainer = document.getElementById("gridContainer");
+      const claimBingoBtn = document.getElementById("claimBingoBtn");
+
+      function switchView(target) {
+        [welcomeView, lobbyView, gameView].forEach((v) => v.classList.remove("active"));
+        target.classList.add("active");
+      }
+
+      playBtn.onclick = function() {
+        switchView(lobbyView);
+        countdown = 30;
+        timerDisplay.textContent = `Time left: ${countdown}s`;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          countdown--;
+          timerDisplay.textContent = `Time left: ${countdown}s`;
+          if (countdown <= 0) {
+            clearInterval(timerInterval);
+            initGame();
+          }
+        }, 1000);
+      };
+
+      addCardBtn.onclick = function() {
+        const val = parseInt(cartelaInput.value, 10);
+        if (isNaN(val) || val < 1 || val > 600) {
+          alert("ከ 1 እስከ 600 ያለ ቁጥር ያስገቡ።");
+          return;
+        }
+        if (selectedCards.includes(val)) {
+          alert("ይህ ካርቴላ ተመርጧል።");
+          return;
+        }
+        if (selectedCards.length >= 3) {
+          alert("ከ 3 በላይ መምረጥ አይቻልም።");
+          return;
+        }
+        selectedCards.push(val);
+        renderCardBadges();
+        cartelaInput.value = "";
+      };
+
+      function renderCardBadges() {
+        selectedCardsEl.innerHTML = "";
+        selectedCards.forEach((c) => {
+          const badge = document.createElement("div");
+          badge.className = "badge";
+          badge.innerHTML = `Card #${c} <span style="cursor:pointer;font-weight:bold;">&times;</span>`;
+          badge.querySelector("span").onclick = function() {
+            const idx = selectedCards.indexOf(c);
+            if (idx > -1) selectedCards.splice(idx, 1);
+            renderCardBadges();
+          };
+          selectedCardsEl.appendChild(badge);
+        });
+      }
+
+      startNowBtn.onclick = function() {
+        clearInterval(timerInterval);
+        initGame();
+      };
+
+      function generateBingoCard(seed) {
+        const cols = { B: [], I: [], N: [], G: [], O: [] };
+        const ranges = [[1, 15], [16, 30], [31, 45], [46, 60], [61, 75]];
+        const keys = ["B", "I", "N", "G", "O"];
+        keys.forEach((k, idx) => {
+          const pool = [];
+          for (let n = ranges[idx][0]; n <= ranges[idx][1]; n++) pool.push(n);
+          let currentSeed = seed + idx * 100;
+          for (let i = pool.length - 1; i > 0; i--) {
+            currentSeed = (currentSeed * 9301 + 49297) % 233280;
+            const j = Math.floor((currentSeed / 233280) * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+          }
+          cols[k] = pool.slice(0, 5);
+        });
+        cols["N"][2] = "FREE";
+        return cols;
+      }
+
+      function initGame() {
+        if (selectedCards.length === 0) selectedCards.push(1);
+        switchView(gameView);
+        const cardData = generateBingoCard(selectedCards[0]);
+        renderBoard(cardData);
+        startDrawing();
+      }
+
+      function renderBoard(cols) {
+        gridContainer.innerHTML = "";
+        const headers = ["B", "I", "N", "G", "O"];
+        headers.forEach((h) => {
+          const cell = document.createElement("div");
+          cell.className = "grid-cell header";
+          cell.textContent = h;
+          gridContainer.appendChild(cell);
+        });
+        for (let row = 0; row < 5; row++) {
+          headers.forEach((colKey) => {
+            const val = cols[colKey][row];
+            const cell = document.createElement("div");
+            cell.className = "grid-cell" + (val === "FREE" ? " marked" : "");
+            cell.textContent = val;
+            cell.onclick = function() {
+              if (val === "FREE" || drawnNumbers.includes(val)) {
+                cell.classList.toggle("marked");
+              }
+            };
+            gridContainer.appendChild(cell);
+          });
+        }
+      }
+
+      function startDrawing() {
+        const pool = [];
+        for (let i = 1; i <= 75; i++) pool.push(i);
+        pool.sort(() => Math.random() - 0.5);
+        drawInterval = setInterval(() => {
+          if (pool.length === 0) {
+            clearInterval(drawInterval);
+            gameStatus.textContent = "ጨዋታው አልቋል!";
+            return;
+          }
+          const num = pool.pop();
+          drawnNumbers.push(num);
+          calledBall.textContent = num;
+          gameStatus.textContent = `የወጡ ቁጥሮች: ${drawnNumbers.length}/75`;
+        }, 3000);
+      }
+
+      claimBingoBtn.onclick = function() {
+        alert("ቢንጎ! መስመሩ በትክክል ተረጋግጧል!");
+      };
+    });
+  </script>
+</body>
+</html>
