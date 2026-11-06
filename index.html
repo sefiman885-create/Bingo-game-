@@ -11,7 +11,7 @@
       --primary: #4a154b;
       --primary-dark: #2c0d2d;
       --secondary: #e58e26;
-      --bg: #f5f0f6;
+      --bg: #f8f9fa;
       --text: #2d3436;
       --green: #2ecc71;
       --red: #e74c3c;
@@ -43,7 +43,6 @@
       position: relative;
     }
 
-    /* Views */
     .view {
       display: none;
       flex: 1;
@@ -56,20 +55,20 @@
       display: flex;
     }
 
-    /* Top Alert Notification */
+    /* ማስጠንቀቂያ ባነር */
     .alert-banner {
       display: none;
-      background: #e74c3c;
+      background: var(--red);
       color: white;
       text-align: center;
-      padding: 8px 12px;
+      padding: 10px 14px;
       font-size: 13px;
       font-weight: bold;
-      z-index: 200;
-      transition: all 0.3s;
+      z-index: 500;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* Top Bar (Active game only) */
+    /* የቀጥታ ጨዋታ አናት ባር */
     .top-bar {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
@@ -100,7 +99,7 @@
       font-size: 12px;
     }
 
-    /* Lobby Header */
+    /* የሎቢ አናት ባር */
     .lobby-top-bar {
       display: flex;
       justify-content: space-between;
@@ -120,7 +119,7 @@
     }
 
     .timer-pill {
-      background: #e74c3c;
+      background: var(--red);
       color: white;
       padding: 4px 12px;
       border-radius: 20px;
@@ -132,13 +131,14 @@
       background: #3498db;
       color: white;
       border: none;
-      padding: 5px 10px;
+      padding: 6px 12px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 12px;
+      font-weight: bold;
     }
 
-    /* Board 1 - 600 Grid */
+    /* 1-600 ካርቴላ መምረጫ ፍርግርግ */
     .board-grid-wrapper {
       flex: 1;
       overflow-y: auto;
@@ -147,30 +147,31 @@
 
     .board-grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
     }
 
     .board-num-btn {
-      aspect-ratio: 1;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #ffffff;
-      border-radius: 6px;
-      font-size: 11px;
+      border-radius: 8px;
+      font-size: 13px;
       font-weight: bold;
       cursor: pointer;
       border: 1px solid #dcdde1;
       color: #2d3436;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.15s;
     }
 
     .board-num-btn.selected {
       background: #e67e22 !important;
       color: white !important;
       border-color: #d35400 !important;
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
 
     .board-num-btn.taken {
@@ -180,7 +181,7 @@
       opacity: 0.6;
     }
 
-    /* Live Game Screen */
+    /* የጨዋታ ገጽ */
     .game-screen {
       display: flex;
       flex-direction: column;
@@ -227,7 +228,7 @@
       font-size: 11px;
     }
 
-    /* Bingo Card Tables */
+    /* የቢንጎ ካርቴላ ጠረጴዛ */
     .active-card-container {
       display: flex;
       flex-direction: column;
@@ -259,7 +260,7 @@
 
     .bingo-table th {
       color: white;
-      padding: 4px;
+      padding: 5px;
       font-size: 13px;
       border-radius: 3px;
     }
@@ -272,7 +273,7 @@
 
     .bingo-cell {
       width: 20%;
-      height: 36px;
+      height: 38px;
       font-size: 13px;
       font-weight: bold;
       border: 1px solid #dfe6e9;
@@ -290,13 +291,13 @@
       font-size: 16px;
     }
 
-    /* 9s Winner Overlay */
+    /* የ9 ሰከንድ አሸናፊ ማሳወቂያ */
     .popup-overlay {
       display: none;
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85);
-      z-index: 300;
+      z-index: 600;
       align-items: center;
       justify-content: center;
       flex-direction: column;
@@ -335,7 +336,7 @@
       font-weight: bold;
     }
 
-    /* History, Wallet & Profile Panes */
+    /* የይዘት ክፍሎች */
     .info-pane {
       padding: 15px;
       display: flex;
@@ -369,7 +370,7 @@
       cursor: pointer;
     }
 
-    /* Bottom Navigation */
+    /* የታችኛው ሜኑ */
     .bottom-nav {
       height: 65px;
       background: white;
@@ -401,12 +402,12 @@
 </head>
 <body>
 
-  <!-- In-app Top Banner Warning -->
-  <div class="alert-banner" id="alertBanner">በቂ ሂሳብ የለዎትም! እባክዎ መጀመሪያ ዲፖዚት ያድርጉ።</div>
+  <!-- የማስጠንቀቂያ ባነር -->
+  <div class="alert-banner" id="alertBanner">ያለዎት ቀሪ ሂሳብ አነስተኛ ነው! እባክዎ መጀመሪያ ዲፖዚት ያድርጉ።</div>
 
   <div class="app-container">
 
-    <!-- Top Bar Info (Shows during game only) -->
+    <!-- የቀጥታ ጨዋታ አናት ባር (በጨዋታ ወቅት ብቻ ይታያል) -->
     <div class="top-bar" id="gameTopBar">
       <div class="stat-badge">
         <span>Game ID</span>
@@ -430,10 +431,10 @@
       </div>
     </div>
 
-    <!-- VIEW 1: GAME -->
+    <!-- VIEW 1: GAME (Lobby + Live) -->
     <div id="view-game" class="view active">
 
-      <!-- Lobby: 1 to 600 board select -->
+      <!-- ሎቢ፡ 1 እስከ 600 መምረጫ -->
       <div id="lobbyScreen" style="display: flex; flex-direction: column; height: 100%;">
         <div class="lobby-top-bar">
           <div class="lobby-badge">ዋሌት: <span id="lobbyWalletDisplay">10.00 Br</span></div>
@@ -442,24 +443,24 @@
           <button class="refresh-btn" onclick="startLobbyTimer()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
         </div>
 
-        <div style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: var(--primary); display: flex; justify-content: space-between;">
-          <span>ካርድ ቁጥር ምረጡ (ከ 1 - 600)</span>
+        <div style="padding: 8px 14px; font-size: 12px; font-weight: bold; color: var(--primary); display: flex; justify-content: space-between; background: #fff;">
+          <span>ካርቴላ ይምረጡ (ከ 1 - 600)</span>
           <span id="selectedCountText">የተመረጡ: 0/3</span>
         </div>
 
         <div class="board-grid-wrapper">
           <div class="board-grid" id="boardGrid">
-            <!-- 1 to 600 populated via JS -->
+            <!-- 1 እስከ 600 በኮድ ይመረታሉ -->
           </div>
         </div>
       </div>
 
-      <!-- Live Active Game Screen -->
+      <!-- የቀጥታ ጨዋታ ገጽ -->
       <div id="liveGameScreen" style="display: none; flex-direction: column; height: 100%;">
         <div class="game-screen">
           <div class="current-call-box">
             <div>
-              <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">CURRENT CALL</div>
+              <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">የአሁኑ ጥሪ</div>
               <div class="call-bubble-main" id="currentCallBox">--</div>
             </div>
             <div style="text-align: right;">
@@ -469,12 +470,12 @@
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 2px 4px;">
-            <span style="font-size: 12px; font-weight: bold; color: var(--primary);">የእርስዎ ካርዶች</span>
-            <span style="font-size: 11px; color: #7f8c8d;">እባክዎ ጨዋታው እስኪያልቅ ይጠብቁ</span>
+            <span style="font-size: 12px; font-weight: bold; color: var(--primary);">የእርስዎ ካርቴላዎች</span>
+            <span style="font-size: 11px; color: #7f8c8d;">ጨዋታው በሂደት ላይ ነው...</span>
           </div>
 
           <div class="active-card-container" id="playerCardsContainer">
-            <!-- Bingo Cards rendered here -->
+            <!-- የተመረጡ ካርቴላዎች -->
           </div>
         </div>
       </div>
@@ -486,7 +487,7 @@
       <div class="info-pane">
         <h3 style="color: var(--primary);">የጨዋታ እና የሂሳብ ታሪክ</h3>
         <div id="historyListContainer" style="display: flex; flex-direction: column; gap: 8px;">
-          <!-- Dynamically filled deposits/withdrawals & games -->
+          <!-- የግብይትና ጨዋታ ታሪክ -->
         </div>
       </div>
     </div>
@@ -519,7 +520,7 @@
         </div>
 
         <div class="info-card">
-          <h4>መረጃ ማሻሻያ / ምዝገባ</h4>
+          <h4 style="margin-bottom: 8px;">መረጃ ማሻሻያ / ምዝገባ</h4>
           <label style="font-size: 12px; color: #555;">ሙሉ ስም</label>
           <input type="text" class="input-field" id="inputName" placeholder="ስምዎን ያስገቡ">
           <label style="font-size: 12px; color: #555;">ስልክ ቁጥር</label>
@@ -529,19 +530,19 @@
       </div>
     </div>
 
-    <!-- 9 Seconds Winner Popup -->
+    <!-- የ9 ሰከንድ አሸናፊ ፖፕአፕ -->
     <div class="popup-overlay" id="bingoPopup">
       <div class="win-box">
         <h1>BINGO!</h1>
         <p id="bingoWinnerName" style="font-size: 15px; font-weight: bold;">አሸናፊ ተገኝቷል!</p>
-        <p style="font-size: 13px; margin-top: 6px;" id="winningBoardText">ቦርድ ቁጥር: #--</p>
+        <p style="font-size: 13px; margin-top: 6px;" id="winningBoardText">ካርቴላ ቁጥር: #--</p>
         <div class="win-timer-circle" id="winCountdown">9</div>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- የታችኛው ዳሰሳ ሜኑ (Bottom Navigation) -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('game')">
       <i class="fa-solid fa-gamepad"></i>
@@ -562,8 +563,9 @@
   </div>
 
   <script>
-    // Initialize Balance: Initial signup bonus 10 Br
-    let userBalance = parseFloat(localStorage.getItem('sefi_balance')) || 10.0;
+    // መጀመሪያ ሲገባ የሚሰጥ 10 ብር ቦነስ
+    let userBalance = localStorage.getItem('sefi_balance') !== null ? parseFloat(localStorage.getItem('sefi_balance')) : 10.0;
+    
     let transactions = JSON.parse(localStorage.getItem('sefi_txs')) || [
       { type: 'Bonus', desc: 'የመጀመሪያ ምዝገባ ቦነስ', amount: 10.0, date: 'አሁን' }
     ];
@@ -580,7 +582,7 @@
       document.getElementById('lobbyWalletDisplay').innerText = `${userBalance.toFixed(2)} Br`;
       document.getElementById('walletPageBalance').innerText = `${userBalance.toFixed(2)} Br`;
 
-      // Render History
+      // የታሪክ ዝርዝር ማሳያ
       const histContainer = document.getElementById('historyListContainer');
       histContainer.innerHTML = '';
       transactions.forEach(t => {
@@ -604,7 +606,7 @@
       banner.style.display = 'block';
       setTimeout(() => {
         banner.style.display = 'none';
-      }, 3500);
+      }, 4000);
     }
 
     function depositMoney() {
@@ -612,9 +614,14 @@
       if (amt && !isNaN(amt) && parseFloat(amt) > 0) {
         const val = parseFloat(amt);
         userBalance += val;
-        transactions.unshift({ type: 'Deposit', desc: 'ገንዘብ ተቀማጭ ተደርጓል', amount: val, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+        transactions.unshift({
+          type: 'Deposit',
+          desc: 'ገንዘብ ተቀማጭ ተደርጓል',
+          amount: val,
+          date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        });
         updateWalletUI();
-        alert(`${val} ብር በተሳካ ሁኔታ ገቢ ተደርጓል!`);
+        alert(`${val} ብር ገቢ ተደርጓል!`);
       }
     }
 
@@ -623,13 +630,18 @@
       if (amt && !isNaN(amt) && parseFloat(amt) > 0) {
         const val = parseFloat(amt);
         if (val > userBalance) {
-          alert("በቂ ቀሪ ሂሳብ የለዎትም!");
+          alert("ያለዎት ቀሪ ሂሳብ በቂ አይደለም!");
           return;
         }
         userBalance -= val;
-        transactions.unshift({ type: 'Withdraw', desc: 'ገንዘብ ወጪ ተደርጓል', amount: -val, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+        transactions.unshift({
+          type: 'Withdraw',
+          desc: 'ገንዘብ ወጪ ተደርጓል',
+          amount: -val,
+          date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        });
         updateWalletUI();
-        alert(`${val} ብር በተሳካ ሁኔታ ወጪ ተደርጓል!`);
+        alert(`${val} ብር ወጪ ተደርጓል!`);
       }
     }
 
@@ -640,7 +652,7 @@
       if (p) userProfile.phone = p;
       localStorage.setItem('sefi_profile', JSON.stringify(userProfile));
       renderProfile();
-      alert("መረጃዎ ተቀምጧል!");
+      alert("መረጃዎ ተመዝግቧል!");
     }
 
     function renderProfile() {
@@ -650,7 +662,7 @@
       document.getElementById('inputPhone').value = userProfile.phone;
     }
 
-    // Tab Switching
+    // ሜኑ መቀያየሪያ
     function switchTab(tabName) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -662,7 +674,7 @@
       }
     }
 
-    // Number to Amharic Word
+    // የአማርኛ ድምፅ አጠራር
     function numberToAmharic(num) {
       const units = ["", "አንድ", "ሁለት", "ሦስት", "አራት", "አምስት", "ስድስት", "ሰባት", "ስምንት", "ዘጠኝ"];
       const tens = ["", "አስር", "ሃያ", "ሠላሳ", "አርባ", "ሃምሳ", "ስልሳ", "ሰባ", "ሰማንያ", "ዘጠና"];
@@ -684,5 +696,4 @@
       const speechText = `${letterNames[letter] || letter} ${amharicNum}`;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(speechText);
-        utterance.lang = 'am-E
+        const utterance1
