@@ -58,12 +58,12 @@
       display: flex;
     }
 
-    /* Top Bar */
+    /* Top Bar - Initially hidden in lobby */
     .top-bar {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
-      padding: 10px 15px;
-      display: flex;
+      padding: 8px 12px;
+      display: none; /* Shows only in active game */
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
@@ -75,50 +75,38 @@
       flex-direction: column;
       align-items: center;
       background: rgba(255, 255, 255, 0.15);
-      padding: 3px 8px;
+      padding: 3px 6px;
       border-radius: 6px;
     }
 
     .stat-badge span:first-child {
-      font-size: 10px;
-      opacity: 0.8;
+      font-size: 9px;
+      opacity: 0.85;
       text-transform: uppercase;
     }
 
     .stat-badge span:last-child {
       font-weight: bold;
-      font-size: 13px;
+      font-size: 12px;
     }
 
-    /* Welcome Banner */
-    .welcome-card {
-      background: linear-gradient(135deg, #7b1fa2, #4a148c);
-      color: white;
-      margin: 12px;
-      padding: 18px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(123, 31, 162, 0.3);
-    }
-
-    .welcome-card h2 {
-      font-size: 22px;
-      margin-bottom: 4px;
-    }
-
-    .welcome-card p {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    /* Lobby Board Selection (1-600) */
-    .lobby-header {
+    /* Lobby Header Bar */
+    .lobby-top-status {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 10px 15px;
       background: #fff;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .lobby-status-pill {
+      background: #f1f2f6;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--primary);
     }
 
     .timer-pill {
@@ -127,9 +115,20 @@
       padding: 4px 12px;
       border-radius: 20px;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 14px;
     }
 
+    .refresh-btn {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* Board Selection (1-600) */
     .board-grid-wrapper {
       flex: 1;
       overflow-y: auto;
@@ -138,8 +137,8 @@
 
     .board-grid {
       display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
     }
 
     .board-num-btn {
@@ -147,30 +146,30 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #dcdde1;
+      background: #ffffff;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      border: 1px solid #c8d6e5;
-      transition: all 0.2s;
+      border: 1px solid #dcdde1;
+      transition: all 0.15s;
     }
 
     .board-num-btn.selected {
-      background: #ff9f43;
+      background: #e67e22;
       color: white;
-      border-color: #ee5253;
+      border-color: #d35400;
       transform: scale(1.05);
     }
 
     .board-num-btn.taken {
-      background: #718093;
-      color: #dcdde1;
+      background: #95a5a6;
+      color: #ecf0f1;
       pointer-events: none;
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
-    /* Game Live Screen */
+    /* Live Game Screen */
     .game-screen {
       display: flex;
       flex-direction: column;
@@ -191,14 +190,13 @@
     }
 
     .call-bubble-main {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 900;
       background: #e67e22;
-      padding: 8px 16px;
-      border-radius: 50px;
-      min-width: 90px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      min-width: 95px;
       text-align: center;
-      letter-spacing: 1px;
     }
 
     .recent-calls {
@@ -218,11 +216,11 @@
       font-size: 11px;
     }
 
-    /* Player Bingo Board Cards */
+    /* Player Bingo Board */
     .active-card-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .bingo-card {
@@ -230,7 +228,7 @@
       border-radius: 10px;
       padding: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border: 2px solid #6c5ce7;
+      border: 2px solid var(--primary);
     }
 
     .card-title-bar {
@@ -238,7 +236,7 @@
       justify-content: space-between;
       font-size: 12px;
       font-weight: bold;
-      color: #6c5ce7;
+      color: var(--primary);
       margin-bottom: 6px;
     }
 
@@ -251,7 +249,7 @@
     .bingo-table th {
       color: white;
       padding: 4px;
-      font-size: 14px;
+      font-size: 13px;
       border-radius: 4px;
     }
 
@@ -263,12 +261,11 @@
 
     .bingo-cell {
       width: 20%;
-      height: 38px;
-      font-size: 14px;
+      height: 36px;
+      font-size: 13px;
       font-weight: bold;
       border: 1px solid #dfe6e9;
       background: #fafafa;
-      cursor: pointer;
     }
 
     .bingo-cell.marked {
@@ -279,10 +276,10 @@
     .bingo-cell.free {
       background: #ffa502;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
     }
 
-    /* Win Popup (9s) */
+    /* 9s Win Popup */
     .popup-overlay {
       display: none;
       position: absolute;
@@ -306,34 +303,28 @@
       padding: 25px;
       border-radius: 16px;
       width: 90%;
-      max-width: 340px;
+      max-width: 330px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      animation: popIn 0.3s ease;
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
     }
 
     .win-box h1 {
-      font-size: 36px;
+      font-size: 34px;
       letter-spacing: 2px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .win-timer-circle {
-      font-size: 32px;
+      font-size: 28px;
       margin: 15px auto 0;
-      width: 55px;
-      height: 55px;
-      line-height: 55px;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
       border-radius: 50%;
       background: rgba(255,255,255,0.25);
       font-weight: bold;
     }
 
-    /* History & Wallet & Profile Views */
+    /* Views */
     .info-pane {
       padding: 15px;
       display: flex;
@@ -356,7 +347,6 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
       z-index: 50;
     }
 
@@ -369,15 +359,9 @@
       cursor: pointer;
       width: 25%;
       height: 100%;
-      text-decoration: none;
       font-size: 11px;
       font-weight: 600;
       gap: 4px;
-      transition: color 0.2s;
-    }
-
-    .nav-item i {
-      font-size: 18px;
     }
 
     .nav-item.active {
@@ -389,19 +373,19 @@
 
   <div class="app-container">
 
-    <!-- Top Bar Info -->
-    <div class="top-bar">
+    <!-- Top Bar Info (Shows ONLY during Live Game) -->
+    <div class="top-bar" id="gameTopBar">
       <div class="stat-badge">
         <span>Game ID</span>
-        <span id="gameId">SF-984</span>
+        <span id="gameId">SF-104</span>
       </div>
       <div class="stat-badge">
         <span>ደራሽ</span>
-        <span id="derashVal">1,020 Br</span>
+        <span id="derashVal">4,800 Br</span>
       </div>
       <div class="stat-badge">
         <span>ተጫዋቾች</span>
-        <span id="playerCount">86</span>
+        <span id="playerCount">600</span>
       </div>
       <div class="stat-badge">
         <span>Stake</span>
@@ -413,19 +397,21 @@
       </div>
     </div>
 
-    <!-- VIEW 1: GAME / LOBBY VIEW -->
+    <!-- VIEW 1: GAME -->
     <div id="view-game" class="view active">
 
       <!-- Sub-view A: Number Selection Lobby (1 to 600) -->
       <div id="lobbyScreen" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="welcome-card">
-          <h2>Welcome to Sefi Bingo</h2>
-          <p id="telegramUserDisplay">እንኳን ደህና መጡ!</p>
+        <div class="lobby-top-status">
+          <div class="lobby-status-pill">ዋሌት: <span id="lobbyWallet">200.00 Br</span></div>
+          <div class="lobby-status-pill">ስቴክ: 10 Br</div>
+          <div class="timer-pill" id="lobbyTimer">30s</div>
+          <button class="refresh-btn" onclick="startLobbyTimer()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
         </div>
 
-        <div class="lobby-header">
-          <div><b>ካርድ ቁጥር ምረጡ (ቢበዛ 3)</b></div>
-          <div class="timer-pill" id="lobbyTimer">30s</div>
+        <div style="padding: 10px 15px; font-size: 13px; font-weight: bold; color: var(--primary); display: flex; justify-content: space-between;">
+          <span>ካርድ ቁጥር ምረጡ (ከ 1 - 600)</span>
+          <span id="selectedCountText">የተመረጡ: 0/3</span>
         </div>
 
         <div class="board-grid-wrapper">
@@ -440,23 +426,22 @@
         <div class="game-screen">
           <div class="current-call-box">
             <div>
-              <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">CURRENT CALL</div>
+              <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">CURRENT CALL</div>
               <div class="call-bubble-main" id="currentCallBox">--</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">ያለፉ ጥሪዎች</div>
+              <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">ያለፉ ጥሪዎች</div>
               <div class="recent-calls" id="recentCallsBox"></div>
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px;">
-            <span style="font-size: 13px; font-weight: bold; color: #4a154b;">የእርስዎ ካርዶች</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 2px 4px;">
+            <span style="font-size: 12px; font-weight: bold; color: var(--primary);">የእርስዎ ካርዶች</span>
             <span style="font-size: 11px; color: #7f8c8d;">እባክዎ ጨዋታው እስኪያልቅ ይጠብቁ</span>
           </div>
 
-          <!-- Cards container -->
           <div class="active-card-container" id="playerCardsContainer">
-            <!-- Dynamically populated selected cards -->
+            <!-- Dynamically populated bingo cards -->
           </div>
         </div>
       </div>
@@ -470,16 +455,9 @@
         <div class="info-card">
           <div style="display:flex; justify-content:space-between; font-weight:bold;">
             <span>Game #SF-983</span>
-            <span style="color: var(--green);">+150.00 Br</span>
+            <span style="color: var(--green);">+832.00 Br</span>
           </div>
-          <div style="font-size: 12px; color: #777; margin-top: 5px;">ካርድ #45 • አሸናፊ</div>
-        </div>
-        <div class="info-card">
-          <div style="display:flex; justify-content:space-between; font-weight:bold;">
-            <span>Game #SF-982</span>
-            <span style="color: var(--red);">-10.00 Br</span>
-          </div>
-          <div style="font-size: 12px; color: #777; margin-top: 5px;">ካርድ #118 • ተሸናፊ</div>
+          <div style="font-size: 12px; color: #777; margin-top: 5px;">ቦርድ #45 • አሸናፊ</div>
         </div>
       </div>
     </div>
@@ -490,11 +468,7 @@
         <h3 style="color: var(--primary);">ሒሳብ / ዋሌት (Wallet)</h3>
         <div class="info-card" style="text-align: center; padding: 25px;">
           <div style="font-size: 13px; color: #777;">ጠቅላላ ቀሪ ሂሳብ</div>
-          <div style="font-size: 32px; font-weight: bold; color: var(--primary); margin: 8px 0;" id="walletBalance">200.00 Br</div>
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button style="flex:1; padding: 10px; background: var(--green); color: white; border:none; border-radius: 8px; font-weight:bold;">ገንዘብ አስገባ (Deposit)</button>
-            <button style="flex:1; padding: 10px; background: var(--secondary); color: white; border:none; border-radius: 8px; font-weight:bold;">አውጣ (Withdraw)</button>
-          </div>
+          <div style="font-size: 30px; font-weight: bold; color: var(--primary); margin: 8px 0;" id="walletBalance">200.00 Br</div>
         </div>
       </div>
     </div>
@@ -504,15 +478,11 @@
       <div class="info-pane">
         <h3 style="color: var(--primary);">መገለጫ (Profile)</h3>
         <div class="info-card" style="display:flex; align-items:center; gap: 15px;">
-          <i class="fa-solid fa-circle-user" style="font-size: 50px; color: var(--primary);"></i>
+          <i class="fa-solid fa-circle-user" style="font-size: 45px; color: var(--primary);"></i>
           <div>
             <h4 id="profileName">Sefi User</h4>
             <p style="font-size: 12px; color: #666;" id="profileUsername">@sefi_user</p>
           </div>
-        </div>
-        <div class="info-card">
-          <div><b>ጠቅላላ ጨዋታዎች:</b> 24</div>
-          <div style="margin-top: 8px;"><b>ያሸነፏቸው:</b> 4</div>
         </div>
       </div>
     </div>
@@ -521,15 +491,15 @@
     <div class="popup-overlay" id="bingoPopup">
       <div class="win-box">
         <h1>BINGO!</h1>
-        <p id="bingoWinnerName" style="font-size: 16px; font-weight: bold;">Abu has won the game!</p>
-        <p style="font-size: 13px; margin-top: 8px;" id="winningBoardText">Board Number: 45</p>
+        <p id="bingoWinnerName" style="font-size: 15px; font-weight: bold;">አሸናፊ ተገኝቷል!</p>
+        <p style="font-size: 13px; margin-top: 6px;" id="winningBoardText">ቦርድ ቁጥር: #--</p>
         <div class="win-timer-circle" id="winCountdown">9</div>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Bottom Nav Bar -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('game')">
       <i class="fa-solid fa-gamepad"></i>
@@ -550,20 +520,17 @@
   </div>
 
   <script>
-    // Initialize Telegram WebApp
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.expand();
       if (tg.initDataUnsafe?.user) {
         const u = tg.initDataUnsafe.user;
         const name = (u.first_name || '') + ' ' + (u.last_name || '');
-        document.getElementById('telegramUserDisplay').innerText = `ሰላም ${name}`;
         document.getElementById('profileName').innerText = name;
         document.getElementById('profileUsername').innerText = u.username ? `@${u.username}` : '';
       }
     }
 
-    // Tab Switching
     function switchTab(tabName) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -575,16 +542,14 @@
       }
     }
 
-    // Number to Amharic Word Converter for TTS Audio
+    // Amharic Number Converter for Voice Calling
     function numberToAmharic(num) {
       const units = ["", "አንድ", "ሁለት", "ሦስት", "አራት", "አምስት", "ስድስት", "ሰባት", "ስምንት", "ዘጠኝ"];
-      const tens = ["", "አስር", "ሃያ", "ሠላሳ", "አርባ", "ሃምሳ", "ስድሳ", "ሰባ", "ሰማንያ", "ዘጠና"];
+      const tens = ["", "አስር", "ሃያ", "ሠላሳ", "አርባ", "ሃምሳ", "ስልሳ", "ሰባ", "ሰማንያ", "ዘጠና"];
       if (num === 0) return "ዜሮ";
       if (num < 10) return units[num];
       if (num === 10) return "አስር";
-      if (num < 20) {
-        return (num === 11 ? "አስራ አንድ" : "አስራ " + units[num - 10]);
-      }
+      if (num < 20) return num === 11 ? "አስራ አንድ" : "አስራ " + units[num - 10];
       if (num < 100) {
         let t = Math.floor(num / 10);
         let rem = num % 10;
@@ -593,10 +558,11 @@
       return num.toString();
     }
 
-    // Speech synthesis for Amharic audio calling
+    // TTS Call in Amharic
     function speakCallAmharic(letter, number) {
+      const letterNames = { 'B': 'ቢ', 'I': 'አይ', 'N': 'ኤን', 'G': 'ጂ', 'O': 'ኦ' };
       const amharicNum = numberToAmharic(number);
-      const speechText = `${letter} ${amharicNum}`;
+      const speechText = `${letterNames[letter] || letter} ${amharicNum}`;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(speechText);
@@ -606,46 +572,59 @@
       }
     }
 
-    // Generate 600 Board Selection Buttons
+    // 1-600 Board Selection
     let selectedBoards = [];
     const boardGrid = document.getElementById('boardGrid');
 
-    for (let i = 1; i <= 600; i++) {
-      const btn = document.createElement('div');
-      btn.className = 'board-num-btn';
-      btn.innerText = i;
+    function buildLobbyGrid() {
+      boardGrid.innerHTML = '';
+      for (let i = 1; i <= 600; i++) {
+        const btn = document.createElement('div');
+        btn.className = 'board-num-btn';
+        btn.innerText = i;
 
-      // Randomly simulate already taken boards
-      if ([14, 55, 102, 233, 412, 560].includes(i)) {
-        btn.classList.add('taken');
-      }
-
-      btn.onclick = () => {
-        if (btn.classList.contains('taken')) return;
-        if (btn.classList.contains('selected')) {
-          btn.classList.remove('selected');
-          selectedBoards = selectedBoards.filter(b => b !== i);
-        } else {
-          if (selectedBoards.length >= 3) {
-            alert('ቢበዛ 3 ካርዶችን ብቻ መምረጥ ይችላሉ!');
-            return;
-          }
-          btn.classList.add('selected');
-          selectedBoards.push(i);
+        // Simulate some taken boards
+        if ([5, 12, 45, 88, 120, 245, 360, 510].includes(i)) {
+          btn.classList.add('taken');
         }
-      };
-      boardGrid.appendChild(btn);
+
+        btn.onclick = () => {
+          if (btn.classList.contains('taken')) return;
+          if (btn.classList.contains('selected')) {
+            btn.classList.remove('selected');
+            selectedBoards = selectedBoards.filter(b => b !== i);
+          } else {
+            if (selectedBoards.length >= 3) {
+              alert('ቢበዛ 3 ካርዶችን ብቻ መምረጥ ይችላሉ!');
+              return;
+            }
+            btn.classList.add('selected');
+            selectedBoards.push(i);
+          }
+          document.getElementById('selectedCountText').innerText = `የተመረጡ: ${selectedBoards.length}/3`;
+        };
+        boardGrid.appendChild(btn);
+      }
     }
 
-    // 30 Seconds Lobby Countdown Timer
+    // 30s Lobby Countdown
     let lobbyTimeLeft = 30;
     let lobbyInterval = null;
 
     function startLobbyTimer() {
-      lobbyTimeLeft = 30;
-      document.getElementById('lobbyTimer').innerText = `${lobbyTimeLeft}s`;
+      clearInterval(lobbyInterval);
+      clearInterval(liveGameInterval);
+
+      document.getElementById('gameTopBar').style.display = 'none'; // Hidden in lobby
       document.getElementById('lobbyScreen').style.display = 'flex';
       document.getElementById('liveGameScreen').style.display = 'none';
+
+      selectedBoards = [];
+      document.getElementById('selectedCountText').innerText = 'የተመረጡ: 0/3';
+      buildLobbyGrid();
+
+      lobbyTimeLeft = 30;
+      document.getElementById('lobbyTimer').innerText = `${lobbyTimeLeft}s`;
 
       lobbyInterval = setInterval(() => {
         lobbyTimeLeft--;
@@ -653,60 +632,71 @@
 
         if (lobbyTimeLeft <= 0) {
           clearInterval(lobbyInterval);
-          // If no board picked, assign board #1 automatically
           if (selectedBoards.length === 0) {
-            selectedBoards = [1];
+            selectedBoards = [Math.floor(Math.random() * 600) + 1];
           }
           launchLiveGame();
         }
       }, 1000);
     }
 
-    // Generate Standard 5x5 Bingo Numbers
-    function generateBingoNumbers(seed) {
-      function getCol(min, max) {
-        let nums = [];
-        while (nums.length < 5) {
+    // Generate Standard Bingo Numbers
+    // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
+    function generateBingoCardData() {
+      function getColumn(min, max) {
+        let arr = [];
+        while (arr.length < 5) {
           let r = Math.floor(Math.random() * (max - min + 1)) + min;
-          if (!nums.includes(r)) nums.push(r);
+          if (!arr.includes(r)) arr.push(r);
         }
-        return nums;
+        return arr;
       }
       return {
-        B: getCol(1, 15),
-        I: getCol(16, 30),
-        N: getCol(31, 45),
-        G: getCol(46, 60),
-        O: getCol(61, 75)
+        B: getColumn(1, 15),
+        I: getColumn(16, 30),
+        N: getColumn(31, 45),
+        G: getColumn(46, 60),
+        O: getColumn(61, 75)
       };
     }
 
-    // Render Player Cards on Live Screen
     let liveGameInterval = null;
     let calledNumbers = [];
     let recentCalls = [];
+    let userCardDataList = [];
 
     function launchLiveGame() {
       document.getElementById('lobbyScreen').style.display = 'none';
+      document.getElementById('gameTopBar').style.display = 'flex'; // Visible in Game
       document.getElementById('liveGameScreen').style.display = 'flex';
+
+      // Calculation: Stake = 10 Br, 80% to Derash (20% house fee)
+      // Example with 600 players: 600 * 10 * 0.8 = 4800 Br
+      const totalPlayers = 600;
+      const stake = 10;
+      const derash = totalPlayers * stake * 0.8;
+
+      document.getElementById('playerCount').innerText = totalPlayers;
+      document.getElementById('derashVal').innerText = `${derash.toLocaleString()} Br`;
+      document.getElementById('gameId').innerText = `SF-${Math.floor(Math.random() * 900 + 100)}`;
 
       const container = document.getElementById('playerCardsContainer');
       container.innerHTML = '';
+      userCardDataList = [];
 
       selectedBoards.forEach(boardNum => {
-        const boardData = generateBingoNumbers(boardNum);
+        const cardData = generateBingoCardData();
+        userCardDataList.push({ boardNum, cardData, marks: Array(5).fill(null).map(() => Array(5).fill(false)) });
+
+        // Set free space
+        userCardDataList[userCardDataList.length - 1].marks[2][2] = true;
+
         const cardDiv = document.createElement('div');
         cardDiv.className = 'bingo-card';
+        cardDiv.id = `card-board-${boardNum}`;
         cardDiv.innerHTML = `
           <div class="card-title-bar">
-            <span>BOARD #${boardNum}</span>
+            <span>ቦርድ #${boardNum}</span>
             <span>STAKE: 10 Br</span>
           </div>
-          <table class="bingo-table">
-            <thead><tr><th>B</th><th>I</th><th>N</th><th>G</th><th>O</th></tr></thead>
-            <tbody>
-              ${[0,1,2,3,4].map(row => `
-                <tr>
-                  ${['B','I','N','G','O'].map(col => {
-                    if (col === 'N' && row === 2) {
-                      return `<td class="bingo-cell free marked">★</
+          <table class="bingo-table"
