@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sefi Bingo</title>
+<style>
+:root{--purple:#76008b;--deep:#4d075c;--lav:#c9acd3;--orange:#ff8500;--green:#159b78}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,"Noto Sans Ethiopic",sans-serif;background:linear-gradient(145deg,#e6d5ed,#b997c8);color:#3f0750;min-height:100vh}
+header{background:#171717;color:white;padding:17px 20px;font-size:25px;font-weight:800;position:sticky;top:0}
+main{max-width:760px;margin:auto;padding:18px 14px 90px}
+.panel{background:#ffffff55;border:2px solid #8e159d;border-radius:25px;padding:17px;margin:14px 0;box-shadow:0 7px 18px #54205a20}
+.welcome{background:linear-gradient(135deg,#a000a9,#530064);color:white;text-align:center;border-radius:28px;padding:28px 12px;font-size:34px;font-weight:900;margin:15px 0 22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#fff;border-radius:13px;padding:12px 5px;text-align:center;font-weight:bold}
+button{border:0;border-radius:14px;padding:12px 16px;font-weight:800;font-size:16px;cursor:pointer}
+.primary{background:linear-gradient(135deg,#9500a7,#550064);color:white}.soft{background:#fff;color:#5b126a;border:1px solid #cbb4d2}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;max-height:55vh;overflow:auto;padding:4px}
+.room{background:var(--orange);color:#31102c;border:2px solid white;padding:10px 2px;border-radius:10px;font-size:15px}
+.room:disabled{opacity:.4;cursor:not-allowed}.room.selected{background:#159b78;color:white}
+.hidden{display:none!important}.muted{opacity:.8}.center{text-align:center}
+.timer{font-size:36px;font-weight:900;color:#168238}
+.bingo{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:420px;margin:14px auto}
+.cell{background:#b9b5d2;border:1px solid white;border-radius:9px;min-height:54px;display:grid;place-items:center;color:white;font-weight:800;font-size:19px}
+.cell.marked{background:#159b78;color:white}.cell.free{background:#f6a000;color:#3b1643}
+.letters{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:420px;margin:0 auto}
+.letters div{background:#74008a;color:white;border-radius:8px;text-align:center;padding:8px;font-weight:900}
+.callbox{background:linear-gradient(110deg,#8b009d,#540064);color:white;border-radius:24px;padding:18px;text-align:center;font-weight:900;font-size:21px}
+.callnum{font-size:42px;color:#ff9a00}.note{font-size:13px;line-height:1.6;color:#4d3154}
+footer{position:fixed;bottom:0;left:0;right:0;background:#eadcf0;border-top:1px solid #b68bc2;display:flex;justify-content:space-around;padding:12px 4px;color:#6a2876;font-weight:bold}
+footer span{font-size:14px}
+@media(max-width:420px){.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.room{padding:9px 1px}.welcome{font-size:29px}}
+</style>
+</head>
+<body>
+<header>🎮 Sefi Bingo</header>
+<main>
+<section id="welcome">
+ <div class="welcome">Welcome<br>to<br>SEFI BINGO</div>
+ <div class="panel center">
+  <h2>እንኳን ወደ Sefi Bingo በደህና መጡ!</h2>
+  <p>የነፃ ጨዋታ ቦነስዎ፦ <b>100 ነጥብ</b></p>
+  <button class="primary" id="startBtn">ቦነስ ተቀበል / ጀምር</button>
+ </div>
+</section>
+
+<section id="lobby" class="hidden">
+ <div class="stats">
+  <div class="stat">Wallet<br><span id="wallet">100</span> ነጥብ</div>
+  <div class="stat">Level<br><span id="level">10</span></div>
+  <div class="stat">Rooms<br>1–600</div>
+ </div>
+ <div class="actions">
+  <button class="soft" id="refreshBtn">↻ Refresh</button>
+  <button class="soft" id="levelBtn">Level: <span id="levelLabel">10</span></button>
+ </div>
+ <div class="panel">
+  <h2 class="center">የጨዋታ ክፍል ምረጥ (1–600)</h2>
+  <p class="center note">እነዚህ ክፍሎች ለነፃ ጨዋታ ብቻ ናቸው።</p>
+  <div class="grid" id="rooms"></div>
+ </div>
+</section>
+
+<section id="waiting" class="hidden">
+ <div class="panel center">
+  <h2>ክፍል <span id="roomNo"></span></h2>
+  <p>ጨዋታ эхлэх хүртэл</p>
+  <div class="timer" id="countdown">30</div>
+  <p>ሰከንድ ቀርቷል</p>
+  <div id="waitingCard"></div>
+  <button class="soft" id="cancelBtn">ወደ Lobby ተመለስ</button>
+ </div>
+</section>
+
+<section id="playing" class="hidden">
+ <div class="stats">
+  <div class="stat">Room<br><span id="playingRoom">1</span></div>
+  <div class="stat">Called<br><span id="calledCount">0</span></div>
+  <div class="stat">Wallet<br><span id="playingWallet">100</span></div>
+ </div>
+ <div class="callbox">
+  <div id="callStatus">ቁጥር እየተጠራ ነው</div>
+  <div class="callnum" id="calledNumber">—</div>
+  <div id="calledAmharic">ይጠብቁ...</div>
+ </div>
+ <div class="panel">
+  <div class="letters"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div>
+  <div class="bingo" id="card"></div>
+  <p class="center note">ቁጥሩ ሲጠራ በካርድዎ ላይ በራሱ ይመረጣል።</p>
+ </div>
+ <div class="actions"><button class="soft" id="soundBtn">🔊 ድምፅ ON</button><button class="soft" id="leaveGameBtn">Lobby</button></div>
+</section>
+
+<section id="winner" class="hidden">
+ <div class="panel center">
+  <h1>🎉 BINGO!</h1>
+  <h2>አሸናፊ ካርድ</h2>
+  <div id="winnerCard"></div>
+  <h2>80% የነፃ ቦነስ ሽልማት: +80 ነጥብ</h2>
+  <p>ወደ Lobby ለመመለስ <b id="winnerTimer">9</b> ሰከንድ</p>
+ </div>
+</section>
+<p class="note center">የሙከራ ስሪት፦ ነጥቦቹ ምናባዊ ናቸው፤ ገንዘብ አይደሉም፣ አይገዙም፣ አይሸጡም እና ወደ ገንዘብ አይቀየሩም።</p>
+</main>
+<footer><span>🎮 Game</span><span>🕘 History</span><span>👛 Wallet</span><span>👤 Profile</span></footer>
+<script>
+const $=id=>document.getElementById(id);
+let wallet=100, level=10, chosenRoom=1, waitTick=null, callTick=null, winTick=null, sound=true;
+let card=[], called=[], gameActive=false, marked=new Set([12]);
+const sections=['welcome','lobby','waiting','playing','winner'];
+function show(id){sections.forEach(s=>$(s).classList.toggle('hidden',s!==id));}
+function updateWallet(){ $('wallet').textContent=wallet; $('playingWallet').textContent=wallet; }
+function renderRooms(){
+ const root=$('rooms'); root.innerHTML='';
+ for(let i=1;i<=600;i++){let b=document.createElement('button');b.className='room';b.textContent=i;b.onclick=()=>joinRoom(i);root.appendChild(b);}
+}
+function makeCard(){
+ let cols=[[1,15],[16,30],[31,45],[46,60],[61,75]];
+ card=[];
+ for(let c=0;c<5;c++){let nums=[];while(nums.length<5){let n=Math.floor(Math.random()*(cols[c][1]-cols[c][0]+1))+cols[c][0];if(!nums.includes(n))nums.push(n);}card.push(nums);}
+ marked=new Set([12]);renderCard('card');
+}
+function renderCard(id){
+ const root=$(id);root.className='bingo';root.innerHTML='';
+ for(let r=0;r<5;r++)for(let c=0;c<5;c++){
+  let idx=r*5+c,cell=document.createElement('div');cell.className='cell';
+  if(idx===12){cell.textContent='FREE';cell.classList.add('free');}
+  else{let n=card[c][r];cell.textContent=n;if(marked.has(idx))cell.classList.add('marked');}
+  root.appendChild(cell);
+ }
+}
+function joinRoom(n){
+ chosenRoom=n;$('roomNo').textContent=n;$('waitingCard').innerHTML='';
+ makeCard();renderCard('waitingCard');show('waiting');
+ let left=30;$('countdown').textContent=left;
+ clearInterval(waitTick);waitTick=setInterval(()=>{left--;$('countdown').textContent=left;if(left<=0){clearInterval(waitTick);startGame();}},1000);
+}
+function startGame(){
+ show('playing');called=[];$('playingRoom').textContent=chosenRoom;$('calledCount').textContent='0';
+ $('callStatus').textContent='ቁጥር እየተጠራ ነው';$('calledNumber').textContent='—';$('calledAmharic').textContent='ይጠብቁ...';
+ gameActive=true;clearInterval(callTick);callTick=setInterval(callNext,2200);
+}
+const units={1:'አንድ',2:'ሁለት',3:'ሶስት',4:'አራት',5:'አምስት',6:'ስድስት',7:'ሰባት',8:'ስምንት',9:'ዘጠኝ',10:'አስር',
+11:'አስራ አንድ',12:'አስራ ሁለት',13:'አስራ ሶስት',14:'አስራ አራት',15:'አስራ አምስት',16:'አስራ ስድስት',17:'አስራ ሰባት',18:'አስራ ስምንት',19:'አስራ ዘጠኝ',
+20:'ሃያ',30:'ሰላሳ',40:'አርባ',50:'ሃምሳ',60:'ስልሳ',70:'ሰባ',75:'ሰባ አምስት'};
+function amharic(n){if(units[n])return units[n];let t=Math.floor(n/10)*10,u=n%10;return (units[t]||'')+(u?' '+units[u]:'');}
+function speak(text){if(!sound||!('speechSynthesis'in window))return; speechSynthesis.cancel();let msg=new SpeechSynthesisUtterance(text);msg.lang='am-ET';msg.rate=.85;speechSynthesis.speak(msg);}
+function callNext(){
+ if(!gameActive)return;
+ if(called.length>=75){finishGame(false);return;}
+ let n;do{n=Math.floor(Math.random()*75)+1;}while(called.includes(n));called.push(n);
+ let letter=n<=15?'B':n<=30?'I':n<=45?'N':n<=60?'G':'O';
+ $('calledNumber').textContent=letter+' - '+n;$('calledAmharic').textContent=amharic(n);
+ $('calledCount').textContent=called.length;speak(letter+' '+amharic(n));
+ for(let c=0;c<5;c++)for(let r=0;r<5;r++)if(card[c][r]===n)marked.add(r*5+c);
+ renderCard('card');if(checkBingo())finishGame(true);
+}
+function checkBingo(){
+ for(let r=0;r<5;r++)if(Array.from({length:5},(_,c)=>r*5+c).every(i=>marked.has(i)))return true;
+ for(let c=0;c<5;c++)if(Array.from({length:5},(_,r)=>r*5+c).every(i=>marked.has(i)))return true;
+ if([0,6,12,18,24].every(i=>marked.has(i)))return true;
+ if([4,8,12,16,20].every(i=>marked.has(i)))return true;
+ return false;
+}
+function finishGame(won){
+ gameActive=false;clearInterval(callTick);speechSynthesis?.cancel?.();
+ if(won){wallet+=80;updateWallet();$('winnerCard').innerHTML='';renderCard('winnerCard');show('winner');}
+ else{alert('ጨዋታው ተጠናቋል። ቢንጎ አልተገኘም።');show('lobby');}
+ if(won){let left=9;$('winnerTimer').textContent=left;clearInterval(winTick);winTick=setInterval(()=>{left--;$('winnerTimer').textContent=left;if(left<=0){clearInterval(winTick);show('lobby');updateWallet();}},1000);}
+}
+$('startBtn').onclick=()=>{show('lobby');renderRooms();updateWallet();};
+$('refreshBtn').onclick=()=>{renderRooms();};
+$('levelBtn').onclick=()=>{level=level===10?20:10;$('level').textContent=level;$('levelLabel').textContent=level;};
+$('cancelBtn').onclick=()=>{clearInterval(waitTick);show('lobby');};
+$('leaveGameBtn').onclick=()=>{gameActive=false;clearInterval(callTick);speechSynthesis?.cancel?.();show('lobby');};
+$('soundBtn').onclick=()=>{sound=!sound;$('soundBtn').textContent=sound?'🔊 ድምፅ ON':'🔇 ድምፅ OFF';};
+updateWallet();
+</script>
+</body>
+</html>
