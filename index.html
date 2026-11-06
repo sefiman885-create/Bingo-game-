@@ -1,534 +1,660 @@
-
 <!DOCTYPE html>
 <html lang="am">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>SEFI BINGO</title>
 
 <style>
-*{box-sizing:border-box}
+:root {
+  --bg:#c5a8e0;
+  --purple:#800080;
+  --dark:#4a148c;
+  --green:#2e7d32;
+  --orange:#f57c00;
+}
+*{box-sizing:border-box;margin:0;padding:0}
 body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#c4a7d0;
- color:#40104e;
+  background:var(--bg);
+  font-family:Arial,sans-serif;
+  color:#222;
+}
+#app{
+  max-width:480px;
+  min-height:100vh;
+  margin:auto;
+  background:#c5a8e0;
+  padding-bottom:55px;
 }
 header{
- background:#750080;
- color:white;
- padding:18px;
- text-align:center;
- font-size:25px;
- font-weight:bold;
+  background:#111;
+  color:white;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  font-weight:bold;
 }
-.page{padding:15px;display:none}
-.active{display:block}
+.stats{
+  background:var(--purple);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+  padding:7px;
+}
+.stat{
+  background:white;
+  padding:8px 3px;
+  border-radius:6px;
+  text-align:center;
+  font-size:12px;
+  font-weight:bold;
+}
+.view{display:none;padding:12px}
+.view.active{display:block}
 .welcome{
- margin:35px 5px;
- padding:30px 10px;
- text-align:center;
- color:white;
- font-size:34px;
- font-weight:bold;
- border-radius:30px;
- background:linear-gradient(130deg,#a000a9,#510064);
+  text-align:center;
+  padding:45px 10px;
 }
-.wallet{
- background:#800080;
- color:white;
- padding:17px;
- margin:20px auto;
- border-radius:30px;
- text-align:center;
- width:65%;
- font-weight:bold;
+h1{color:var(--dark);font-size:32px}
+button{
+  border:0;
+  padding:12px;
+  border-radius:7px;
+  font-weight:bold;
+  cursor:pointer;
 }
-.box{
- border:3px solid #87008d;
- border-radius:30px;
- padding:15px;
- text-align:center;
+.primary{
+  background:var(--dark);
+  color:white;
+  width:90%;
+  margin:8px;
 }
-.stake{
- display:block;
- width:100%;
- margin:15px 0;
- padding:20px;
- border:0;
- border-radius:50px;
- color:white;
- font-size:23px;
- font-weight:bold;
- background:#299b83;
+.secondary{background:var(--green);color:white}
+.orange{background:var(--orange);color:white}
+.danger{background:#d32f2f;color:white}
+.cartelas{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:5px;
+  height:65vh;
+  overflow:auto;
+  padding:5px;
+  background:#ffffff70;
 }
-.stake:nth-of-type(2){background:#e17d35}
-button{cursor:pointer}
-.top{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:5px;
+.cartela{
+  background:var(--orange);
+  color:white;
+  border:1px solid #d84315;
+  border-radius:5px;
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  font-weight:bold;
 }
-.top button{
- border:0;
- padding:13px 2px;
- border-radius:12px;
- font-weight:bold;
- background:white;
- color:#62006d;
+.cartela.selected{background:var(--green)}
+.arena{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:7px;
+  height:450px;
 }
-.info{
- display:flex;
- justify-content:space-between;
- font-weight:bold;
- color:green;
- margin:15px 0;
+.board,.player-box,.call-box{
+  background:white;
+  padding:5px;
+  border-radius:7px;
 }
-.gamegrid{
- display:grid;
- grid-template-columns:1fr 1.5fr;
- gap:8px;
+.bingo-head,.master,.player-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:3px;
 }
-.card{
- background:#b9acd0;
- border:2px solid white;
- border-radius:10px;
- padding:5px;
+.bingo-head div{
+  background:var(--dark);
+  color:white;
+  text-align:center;
+  padding:5px;
+  font-weight:bold;
 }
-.bingo{
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:5px;
+.master{
+  grid-template-rows:repeat(15,1fr);
+  height:390px;
 }
-.cell{
- min-width:0;
- height:40px;
- border:1px solid white;
- border-radius:9px;
- display:flex;
- align-items:center;
- justify-content:center;
- font-weight:bold;
- background:#b7b1d0;
- color:#292238;
+.m-cell,.p-cell{
+  background:#eee;
+  display:grid;
+  place-items:center;
+  border-radius:3px;
+  font-weight:bold;
+  font-size:12px;
 }
-.cell.marked{
- background:#ff8900;
- color:#222;
+.hit{background:var(--green);color:white}
+.current{background:var(--orange);color:white}
+.right{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
 }
-.bhead{
- background:#85008a;
- color:white;
- font-weight:bold;
+.call-box{text-align:center}
+.call{
+  font-size:35px;
+  font-weight:bold;
+  color:var(--dark);
 }
-.bhead:nth-child(1){background:orange}
-.bhead:nth-child(2){background:green}
-.bhead:nth-child(3){background:blue}
-.bhead:nth-child(4){background:red}
-.bhead:nth-child(5){background:#71006f}
-.right{text-align:center}
-.callbox{
- background:#790080;
- color:white;
- padding:20px 5px;
- border-radius:40px;
- font-size:22px;
- font-weight:bold;
- margin-bottom:15px;
-}
-.number{
- margin:15px auto;
- width:75px;
- height:75px;
- background:#ff8500;
- border-radius:50%;
- display:grid;
- place-items:center;
- font-size:35px;
- color:white;
-}
-.control{
- display:flex;
- justify-content:space-around;
- align-items:center;
- background:#ddd0e9;
- padding:12px 2px;
- border-radius:15px;
-}
-.control button{
- border:0;
- padding:8px;
- background:#790080;
- color:white;
- border-radius:10px;
-}
-.message{
- margin-top:20px;
- background:#b9a9d0;
- border-radius:15px;
- min-height:180px;
- padding:20px;
- font-size:20px;
- font-weight:bold;
-}
-.bottom{
- position:fixed;
- bottom:0;
- left:0;
- width:100%;
- background:#d5c1df;
- display:grid;
- grid-template-columns:repeat(4,1fr);
- padding:10px 3px;
- border-top:2px solid white;
-}
-.bottom button{
- background:none;
- border:0;
- color:#650078;
- font-weight:bold;
- padding:10px 0;
-}
-.bottom button.selected{
- background:#790080;
- color:white;
- border-radius:18px;
-}
+.player-box{flex:1}
+.player-grid{margin-top:8px}
+.p-cell{aspect-ratio:1;cursor:pointer}
+.marked{background:var(--orange);color:white}
+.free{background:var(--green);color:white}
 .actions{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:5px;
- margin-top:15px;
+  display:flex;
+  gap:6px;
+  margin-top:10px;
 }
-.actions button{
- padding:14px 2px;
- border:0;
- border-radius:15px;
- background:#800080;
- color:white;
- font-weight:bold;
+.actions button{flex:1}
+.winner{
+  position:fixed;
+  inset:0;
+  background:#000e;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  padding:15px;
 }
-#calledList{
- display:flex;
- flex-wrap:wrap;
- gap:5px;
- margin-top:15px;
+.winner-box{
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  text-align:center;
+  width:100%;
+  max-width:350px;
+  border:5px solid gold;
 }
-#calledList span{
- padding:8px;
- border-radius:8px;
- background:#ff8900;
- color:black;
+.winner-box h1{color:green}
+.winner-card{
+  font-size:35px;
+  color:var(--orange);
+  font-weight:bold;
+  margin:15px;
 }
-@media(max-width:380px){
- .cell{height:34px;font-size:12px}
- .gamegrid{grid-template-columns:1fr 1.25fr}
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  max-width:480px;
+  display:flex;
+  justify-content:space-around;
+  background:white;
+  padding:12px 2px;
+  z-index:5;
+}
+.nav button{
+  background:white;
+  color:var(--dark);
+  font-size:11px;
+  padding:5px;
+}
+input,select{
+  padding:10px;
+  width:90%;
+  margin:7px;
+  border:1px solid #aaa;
+  border-radius:6px;
+}
+.history-item{
+  background:white;
+  padding:12px;
+  margin:6px;
+  border-radius:7px;
 }
 </style>
 </head>
 
 <body>
+<div id="app">
 
-<header>🎮 SEFI BINGO</header>
+<header>
+  <span>☰</span>
+  <span>🇪🇹 SEFI BINGO</span>
+  <button id="soundBtn">🔊</button>
+</header>
+
+<div class="stats">
+  <div class="stat">ነጥብ<br><span id="balance">100</span></div>
+  <div class="stat">ተጫዋቾች<br><span id="players">0</span></div>
+  <div class="stat">ደራሽ<br><span id="pot">0</span></div>
+  <div class="stat">ጥሪ<br><span id="calls">0</span></div>
+  <div class="stat">ለአሸናፊ<br><span id="prize">0</span></div>
+  <div class="stat">ለባለቤት<br><span id="owner">0</span></div>
+</div>
 
 <!-- HOME -->
-<section id="home" class="page active">
-
+<section id="home" class="view active">
 <div class="welcome">
-Welcome<br>to<br>SEFI BINGO
-</div>
-
-<div class="wallet">
-💳 Wallet: <span id="homeWallet">1000</span> Points
-</div>
-
-<div class="box">
-<h2>Choose Your Game</h2>
-
-<button class="stake" onclick="startGame(10)">
-▶ Play — 10 Points
-</button>
-
-<button class="stake" onclick="startGame(20)">
-▶ Play — 20 Points
-</button>
+  <h1>SEFI BINGO</h1>
+  <p>እንኳን ወደ SEFI BINGO በደህና መጡ!</p>
+  <br>
+  <button class="primary" onclick="startSelection()">🎮 ጨዋታ ጀምር</button>
+  <button class="secondary" onclick="watchGame()">👁 ጨዋታ ተመልከት</button>
 </div>
 </section>
 
+<!-- SELECTION -->
+<section id="selection" class="view">
+<h3>ካርቴላ ምረጥ (ከ1-3)</h3>
+<p>ቀሪ ጊዜ፦ <span id="timer">30</span></p>
+<div class="cartelas" id="cartelas"></div>
+<button class="primary" onclick="confirmCards()">ቀጥል</button>
+</section>
+
 <!-- GAME -->
-<section id="game" class="page">
-
-<div class="top">
-<button onclick="leaveGame()">↩ Leave</button>
-<button id="timer">30</button>
-<button>Wallet<br><span id="wallet">1000</span></button>
-<button>Stake<br><span id="stake">10</span></button>
+<section id="game" class="view">
+<div class="arena">
+<div class="board">
+<div class="bingo-head">
+<div>B</div><div>I</div><div>N</div><div>G</div><div>O</div>
 </div>
-
-<div class="info">
-<span>Boards: 1/1</span>
-<span>SEFI BINGO</span>
-</div>
-
-<div class="gamegrid">
-
-<div class="card">
-<div class="bingo" id="myCard"></div>
+<div class="master" id="master"></div>
 </div>
 
 <div class="right">
-
-<div class="callbox">
-<span id="status">Ready</span>
-<div class="number" id="current">--</div>
+<div class="call-box">
+<p>የተጠራው ቁጥር</p>
+<div class="call" id="current">--</div>
+<p id="gameStatus">ጨዋታ በመጠበቅ ላይ</p>
 </div>
 
-<div class="control">
-<button onclick="soundToggle()">🔊 Sound</button>
-<button onclick="toggleAuto()" id="auto">Auto OFF</button>
+<div class="player-box">
+<p id="cardLabel">የካርቴላ ቁጥር</p>
+<div class="player-grid" id="playerCard"></div>
 </div>
 
-<div class="message" id="message">
-Welcome to SEFI BINGO!
-</div>
-
-<div id="calledList"></div>
+<button class="secondary" onclick="nextCard()">ቀጣይ ካርድ</button>
 </div>
 </div>
 
 <div class="actions">
-<button style="background:#d00019" onclick="leaveGame()">↩ Leave</button>
-<button style="background:#164fe4" onclick="newGame()">↻ Refresh</button>
-<button style="background:#25834a" onclick="toggleAuto()">Automatic</button>
+<button class="danger" onclick="leaveGame()">ውጣ</button>
+<button class="secondary" onclick="claimBingo()">BINGO!</button>
 </div>
-
-</section>
-
-<!-- HISTORY -->
-<section id="history" class="page">
-<h2>📜 Game History</h2>
-<div id="historyList">No games played yet.</div>
 </section>
 
 <!-- WALLET -->
-<section id="walletPage" class="page">
-<h2>💳 My Wallet</h2>
-<div class="wallet">
-Your Points<br>
-<h1 id="walletBalance">1000</h1>
+<section id="wallet" class="view">
+<h2>የነጥብ ቦርሳ</h2>
+<div class="history-item">
+  ያለህ ነጥብ፦ <b id="walletBalance">100</b>
 </div>
-<p>Free demo points only.</p>
+<p>ይህ የሙከራ ነጥብ ቦርሳ ነው።</p>
 </section>
 
-<!-- PROFILE -->
-<section id="profile" class="page">
-<h2>👤 My Profile</h2>
-<h3>SEFI MAN</h3>
-<p>Welcome to SEFI BINGO</p>
-<p>Version 1.0</p>
+<!-- HISTORY -->
+<section id="history" class="view">
+<h2>የአሸናፊዎች ታሪክ</h2>
+<div id="historyList"></div>
 </section>
 
-<nav class="bottom">
-<button class="selected" onclick="showPage('home',this)">🎮<br>Game</button>
-<button onclick="showPage('history',this)">◷<br>History</button>
-<button onclick="showPage('walletPage',this)">▣<br>Wallet</button>
-<button onclick="showPage('profile',this)">♙<br>Profile</button>
+<!-- SETTINGS -->
+<section id="settings" class="view">
+<h2>ቅንብሮች</h2>
+<label>የጨዋታ ነጥብ</label>
+<input type="number" id="stakeInput" value="10" min="1">
+<label>የቁጥር ጥሪ ሰከንድ</label>
+<input type="number" id="speedInput" value="4" min="2">
+<button class="primary" onclick="saveSettings()">ቅንብር አስቀምጥ</button>
+<button class="secondary" onclick="toggleSound()">ድምፅ ON/OFF</button>
+</section>
+
+<nav class="nav">
+<button onclick="showView('home')">🏠<br>ዋና ገጽ</button>
+<button onclick="showView('wallet')">💰<br>Wallet</button>
+<button onclick="showView('history')">📋<br>History</button>
+<button onclick="showView('settings')">⚙️<br>Settings</button>
 </nav>
+</div>
+
+<!-- WINNER -->
+<div class="winner" id="winner">
+<div class="winner-box">
+<h1>🏆 BINGO!</h1>
+<p>እንኳን ደስ አለህ!</p>
+<div id="winnerName">SEFI PLAYER</div>
+<div class="winner-card" id="winnerCard"></div>
+<p id="winnerPrize"></p>
+<button class="primary" onclick="closeWinner()">እሺ</button>
+</div>
+</div>
 
 <script>
-let balance=1000;
-let stake=10;
-let numbers=[];
-let called=[];
-let card=[];
-let timer=30;
-let auto=false;
-let interval=null;
-let sound=true;
-let history=[];
+const S={
+ balance:100,
+ stake:10,
+ cards:[],
+ matrices:{},
+ index:0,
+ called:[],
+ deck:[],
+ players:0,
+ sound:true,
+ auto:true,
+ interval:null,
+ timer:null,
+ seconds:30,
+ watching:false,
+ gameOver:false,
+ history:[]
+};
 
-function showPage(id,btn){
- stopAuto();
- document.querySelectorAll('.page').forEach(p=>
- p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
+const $=id=>document.getElementById(id);
 
- document.querySelectorAll('.bottom button').forEach(b=>
- b.classList.remove('selected'));
- btn.classList.add('selected');
-
- updateWallet();
+function showView(id){
+ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+ $(id).classList.add('active');
 }
 
-function updateWallet(){
- document.getElementById('wallet').textContent=balance;
- document.getElementById('homeWallet').textContent=balance;
- document.getElementById('walletBalance').textContent=balance;
+function stats(){
+ $('balance').textContent=S.balance;
+ $('walletBalance').textContent=S.balance;
+ $('players').textContent=S.players;
+ const pool=S.players*S.stake;
+ $('pot').textContent=pool;
+ $('prize').textContent=Math.floor(pool*.8);
+ $('owner').textContent=Math.floor(pool*.2);
+ $('calls').textContent=S.called.length;
 }
 
-function startGame(amount){
- stake=amount;
- document.getElementById('stake').textContent=stake;
- document.getElementById('home').classList.remove('active');
- document.getElementById('game').classList.add('active');
- newGame();
+function speak(text){
+ if(!S.sound || !('speechSynthesis' in window))return;
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang='am-ET';
+ u.rate=.85;
+ speechSynthesis.speak(u);
 }
 
-function createCard(){
- card=[];
- let html='';
- let letters=['B','I','N','G','O'];
+const words=[
+'','አንድ','ሁለት','ሶስት','አራት','አምስት',
+'ስድስት','ሰባት','ስምንት','ዘጠኝ','አስር',
+'አስራ አንድ','አስራ ሁለት','አስራ ሶስት',
+'አስራ አራት','አስራ አምስት',
+'አስራ ስድስት','አስራ ሰባት',
+'አስራ ስምንት','አስራ ዘጠኝ'
+];
 
- for(let col=0;col<5;col++){
-  let min=col*15+1;
-  let nums=[];
+function numAm(n){
+ if(n<20)return words[n];
+ const t=['','','ሃያ','ሰላሳ','አርባ','ሃምሳ','ስልሳ','ሰባ'];
+ return t[Math.floor(n/10)]+(n%10?' '+words[n%10]:'');
+}
 
-  while(nums.length<5){
-   let n=Math.floor(Math.random()*15)+min;
-   if(!nums.includes(n))nums.push(n);
+function column(n){
+ return n<=15?'B':n<=30?'I':n<=45?'N':n<=60?'G':'O';
+}
+
+function speakNumber(n){
+ const letter={B:'ቢ',I:'አይ',N:'ኤን',G:'ጂ',O:'ኦ'};
+ speak(letter[column(n)]+' '+numAm(n));
+}
+
+function shuffled(min,max){
+ const a=Array.from({length:max-min+1},(_,i)=>i+min);
+ return a.sort(()=>Math.random()-.5).slice(0,5);
+}
+
+function generateCard(){
+ const cols=[
+ shuffled(1,15),
+ shuffled(16,30),
+ shuffled(31,45),
+ shuffled(46,60),
+ shuffled(61,75)
+ ];
+ cols[2][2]='FREE';
+ return Array.from({length:5},(_,r)=>cols.map(c=>c[r]));
+}
+
+function startSelection(){
+ S.watching=false;
+ S.cards=[];
+ showView('selection');
+ buildCartelas();
+ S.seconds=30;
+ clearInterval(S.timer);
+ S.timer=setInterval(()=>{
+  S.seconds--;
+  $('timer').textContent=S.seconds;
+  if(S.seconds<=0){
+   clearInterval(S.timer);
+   confirmCards();
   }
-
-  card.push(nums);
- }
-
- html+=letters.map(x=>`<div class="cell bhead">${x}</div>`).join('');
-
- for(let row=0;row<5;row++){
-  for(let col=0;col<5;col++){
-   let n=card[col][row];
-   html+=`<div class="cell" id="c${n}" onclick="mark(${n})">${n}</div>`;
-  }
- }
-
- document.getElementById('myCard').innerHTML=html;
+ },1000);
 }
 
-function newGame(){
- stopAuto();
- numbers=Array.from({length:75},(_,i)=>i+1);
- called=[];
- timer=30;
-
- document.getElementById('current').textContent='--';
- document.getElementById('status').textContent='Ready';
- document.getElementById('message').textContent='Good luck! Enjoy SEFI BINGO.';
- document.getElementById('calledList').innerHTML='';
- document.getElementById('timer').textContent=timer;
-
- createCard();
+function buildCartelas(){
+ $('cartelas').innerHTML='';
+ for(let i=1;i<=600;i++){
+  const d=document.createElement('div');
+  d.className='cartela';
+  d.textContent=i;
+  d.onclick=()=>{
+   if(S.cards.includes(i)){
+    S.cards=S.cards.filter(x=>x!==i);
+    d.classList.remove('selected');
+   }else if(S.cards.length<3){
+    S.cards.push(i);
+    d.classList.add('selected');
+   }
+  };
+  $('cartelas').appendChild(d);
+ }
 }
 
-function callNumber(){
- if(numbers.length===0){
-  stopAuto();
-  document.getElementById('status').textContent='Finished';
+function confirmCards(){
+ clearInterval(S.timer);
+ if(!S.cards.length){
+  S.cards=[Math.floor(Math.random()*600)+1];
+ }
+ if(S.balance<S.cards.length*S.stake){
+  alert('በቂ የሙከራ ነጥብ የለም። በነፃ ተመልከት።');
+  S.watching=true;
+  launchGame();
   return;
  }
+ S.balance-=S.cards.length*S.stake;
+ S.cards.forEach(id=>S.matrices[id]={
+  matrix:generateCard(),
+  marked:{'2,2':true}
+ });
+ S.index=0;
+ S.watching=false;
+ launchGame();
+}
 
- let index=Math.floor(Math.random()*numbers.length);
- let n=numbers.splice(index,1)[0];
- called.push(n);
+function watchGame(){
+ S.watching=true;
+ S.cards=[];
+ S.index=0;
+ launchGame();
+}
 
- document.getElementById('current').textContent=n;
- document.getElementById('status').textContent='Number Called';
+function launchGame(){
+ clearInterval(S.interval);
+ S.called=[];
+ S.gameOver=false;
+ S.deck=Array.from({length:75},(_,i)=>i+1)
+  .sort(()=>Math.random()-.5);
+ S.players= Math.floor(Math.random()*40)+5;
+ buildMaster();
+ stats();
+ showView('game');
+ $('gameStatus').textContent=S.watching?'በመመልከት ላይ':'በጨዋታ ላይ';
+ renderCard();
+ speak('የሴፊ ቢንጎ ጨዋታ ተጀምሯል። መልካም ዕድል!');
+ S.interval=setInterval(callBall,4000);
+}
 
- let letter=['B','I','N','G','O'][Math.floor((n-1)/15)];
-
- document.getElementById('message').textContent=
- letter+' - '+n;
-
- document.getElementById('calledList').innerHTML=
- called.map(x=>`<span>${x}</span>`).join('');
-
- document.getElementById('timer').textContent=timer;
-
- if(sound){
-  try{
-   let audio=new AudioContext();
-   let osc=audio.createOscillator();
-   osc.connect(audio.destination);
-   osc.start();
-   osc.stop(audio.currentTime+.1);
-  }catch(e){}
+function buildMaster(){
+ $('master').innerHTML='';
+ for(let n=1;n<=75;n++){
+  const d=document.createElement('div');
+  d.className='m-cell';
+  d.id='m'+n;
+  d.textContent=n;
+  $('master').appendChild(d);
  }
 }
 
-function mark(n){
- if(!called.includes(n)){
-  document.getElementById('message').textContent=
-  'ይህ ቁጥር ገና አልተጠራም!';
+function callBall(){
+ if(S.gameOver || !S.deck.length){
+  clearInterval(S.interval);
   return;
  }
+ const n=S.deck.pop();
+ S.called.push(n);
+ const old=document.querySelector('.m-cell.current');
+ if(old){old.classList.remove('current');old.classList.add('hit')}
+ $('m'+n).classList.add('current');
+ $('current').textContent=column(n)+'-'+n;
+ speakNumber(n);
 
- let el=document.getElementById('c'+n);
- if(el)el.classList.add('marked');
-
- checkBingo();
+ if(!S.watching && S.auto){
+  S.cards.forEach(id=>{
+   const c=S.matrices[id];
+   c.matrix.forEach((row,r)=>row.forEach((v,col)=>{
+    if(v===n)c.marked[r+','+col]=true;
+   }));
+  });
+ }
+ stats();
+ renderCard();
 }
 
-function checkBingo(){
- let marked=card.map(col=>col.filter(n=>
- document.getElementById('c'+n)?.classList.contains('marked')
- ));
+function renderCard(){
+ $('playerCard').innerHTML='';
+ if(S.watching){
+  $('cardLabel').textContent='👁 ነፃ ተመልካች';
+  return;
+ }
+ const id=S.cards[S.index];
+ if(!id)return;
+ const c=S.matrices[id];
+ $('cardLabel').textContent='ካርቴላ #'+id+' ('+(S.index+1)+'/'+S.cards.length+')';
+ c.matrix.forEach((row,r)=>row.forEach((v,col)=>{
+  const d=document.createElement('div');
+  d.className='p-cell';
+  d.textContent=v;
+  if(v==='FREE')d.classList.add('free');
+  else if(c.marked[r+','+col])d.classList.add('marked');
+  d.onclick=()=>{
+   if(S.called.includes(v)){
+    c.marked[r+','+col]=true;
+    d.classList.add('marked');
+   }
+  };
+  $('playerCard').appendChild(d);
+ }));
+}
 
+function nextCard(){
+ if(S.cards.length>1){
+  S.index=(S.index+1)%S.cards.length;
+  renderCard();
+ }
+}
+
+function verify(id){
+ const m=S.matrices[id].marked;
  for(let i=0;i<5;i++){
-  if(marked[i].length===5){
-   win();
-   return;
-  }
+  if([0,1,2,3,4].every(j=>m[i+','+j]))return true;
+  if([0,1,2,3,4].every(j=>m[j+','+i]))return true;
  }
+ if([0,1,2,3,4].every(i=>m[i+','+i]))return true;
+ if([0,1,2,3,4].every(i=>m[i+','+(4-i)]))return true;
+ return !!(m['0,0']&&m['0,4']&&m['4,0']&&m['4,4']);
+}
 
- for(let row=0;row<5;row++){
-  if(card.every(col=>
-   document.getElementById('c'+col[row])
-   ?.classList.contains('marked'))){
-   win();
-   return;
-  }
+function claimBingo(){
+ if(S.watching){
+  alert('ተመልካች ቢንጎ ማስታወቅ አይችልም።');
+  return;
  }
-}
-
-function win(){
- stopAuto();
- document.getElementById('status').textContent='BINGO!';
- document.getElementById('message').textContent=
- '🎉 BINGO! Congratulations!';
-}
-
-function toggleAuto(){
- if(auto){
-  stopAuto();
- }else{
-  auto=true;
-  document.getElementById('auto').textContent='Auto ON';
-  interval=setInterval(()=>{
-   callNumber();
-  },3000);
+ const winner=S.cards.find(id=>verify(id));
+ if(!winner){
+  alert('ገና የማሸነፊያ መስመር አልተሟላም!');
+  return;
  }
+ finishGame(winner);
 }
 
-function stopAuto(){
- auto=false;
- clearInterval(interval);
- interval=null;
- document.getElementById('auto').textContent='Auto OFF';
+function finishGame(id){
+ if(S.gameOver)return;
+ S.gameOver=true;
+ clearInterval(S.interval);
+ const prize=Math.floor(S.players*S.stake*.8);
+ const owner=Math.floor(S.players*S.stake*.2);
+ S.balance+=prize;
+ stats();
+ S.history.unshift({
+  name:'SEFI PLAYER',
+  card:id,
+  prize:prize,
+  date:new Date().toLocaleString()
+ });
+ $('winnerName').textContent='SEFI PLAYER';
+ $('winnerCard').textContent='#'+id;
+ $('winnerPrize').textContent='የምናባዊ ሽልማት፦ '+prize+' ነጥብ';
+ $('winner').style.display='flex';
+ speak('ቢንጎ! አሸናፊ ተገኝቷል! እንኳን ደስ አለዎት!');
+ renderHistory();
 }
 
-function soundToggle(){
- sound=!sound;
+function closeWinner(){
+ $('winner').style.display='none';
+ showView('home');
+}
+
+function renderHistory(){
+ $('historyList').innerHTML='';
+ S.history.forEach(w=>{
+  const d=document.createElement('div');
+  d.className='history-item';
+  d.textContent='🏆 '+w.name+' | ካርድ #'+w.card+
+  ' | '+w.prize+' ነጥብ | '+w.date;
+  $('historyList').appendChild(d);
+ });
 }
 
 function leaveGame(){
- stopAuto();
- history.push('SEFI BINGO - '+new Date().toLocaleString());
- document.getElementById('historyList').innerHTML=
- history.map(x=>'<p>'+x+'</p>').join('');
- document.querySelectorAll('.page').forEach(p=>
- p.classList.remove('active'));
- document.getElementById('home').classList.add('active');
+ clearInterval(S.interval);
+ clearInterval(S.timer);
+ showView('home');
 }
 
-updateWallet();
+function saveSettings(){
+ const stake=Number($('stakeInput').value);
+ const speed=Number($('speedInput').value);
+ if(stake<1 || speed<2 || !Number.isFinite(stake+speed)){
+  alert('ትክክለኛ ቁጥር አስገባ!');
+  return;
+ }
+ S.stake=stake;
+ if(S.interval && !S.gameOver){
+  clearInterval(S.interval);
+  S.interval=setInterval(callBall,speed*1000);
+ }
+ alert('ቅንብሩ ተቀምጧል!');
+ stats();
+}
+
+function toggleSound(){
+ S.sound=!S.sound;
+ $('soundBtn').textContent=S.sound?'🔊':'🔇';
+ if(!S.sound)speechSynthesis.cancel();
+}
+
+$('soundBtn').onclick=toggleSound;
+
+stats();
 </script>
 </body>
-</html>
+ </html>
