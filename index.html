@@ -407,7 +407,7 @@
 
   <div class="app-container">
 
-    <!-- የቀጥታ ጨዋታ አናት ባር (በጨዋታ ወቅት ብቻ ይታያል) -->
+    <!-- የቀጥታ ጨዋታ አናት ባር -->
     <div class="top-bar" id="gameTopBar">
       <div class="stat-badge">
         <span>Game ID</span>
@@ -696,4 +696,4 @@
       const speechText = `${letterNames[letter] || letter} ${amharicNum}`;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance
+        const utterance = new SpeechSynthe
